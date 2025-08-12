@@ -1,0 +1,315 @@
+/* App-specific styles for Secret Santa */
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  padding: 20px;
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Additional Secret Santa specific styles */
+.name-input-container {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.name-input-container .form-control {
+  flex: 1;
+  min-width: 200px;
+}
+
+.assignment-card {
+  background: linear-gradient(135deg, var(--snow-white) 0%, var(--warm-cream) 100%);
+  border: 2px solid var(--holly-green);
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 8px 32px rgba(15, 81, 50, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.assignment-card::before {
+  content: '🎁';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 2rem;
+  opacity: 0.3;
+}
+
+.recipient-name-large {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--cranberry-red);
+  text-align: center;
+  margin: 1rem 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.bio-content {
+  background: var(--snow-white);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 4px solid var(--gold);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-dark);
+  white-space: pre-wrap;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.admin-toggle {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+}
+
+.file-input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.file-input-wrapper input[type="file"] {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.file-input-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  border: 2px dashed var(--silver);
+  border-radius: 12px;
+  background: var(--warm-cream);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-align: center;
+}
+
+.file-input-display:hover {
+  border-color: var(--holly-green);
+  background: var(--snow-white);
+}
+
+.file-input-display.dragover {
+  border-color: var(--cranberry-red);
+  background: rgba(220, 53, 69, 0.05);
+  transform: scale(1.02);
+}
+
+.upload-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+.data-status {
+  background: linear-gradient(135deg, var(--holly-green), var(--pine-green));
+  color: var(--snow-white);
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.data-status code {
+  background: rgba(255,255,255,0.2);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Consolas', monospace;
+}
+
+.passphrase-display {
+  background: var(--warm-cream);
+  border: 1px solid var(--silver);
+  padding: 1rem;
+  border-radius: 8px;
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 0.9rem;
+  word-break: break-all;
+  margin: 1rem 0;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--silver);
+  border-radius: 50%;
+  border-top-color: var(--holly-green);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.participant-count {
+  display: inline-flex;
+  align-items: center;
+  background: var(--holly-green);
+  color: var(--snow-white);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0.5rem 0;
+}
+
+.participant-count::before {
+  content: '👥';
+  margin-right: 0.5rem;
+}
+
+.holiday-decoration {
+  position: absolute;
+  font-size: 1.5rem;
+  opacity: 0.1;
+  pointer-events: none;
+  animation: float 6s ease-in-out infinite;
+}
+
+.holiday-decoration:nth-child(odd) {
+  animation-delay: -3s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.print-preview {
+  background: var(--snow-white);
+  border: 1px solid var(--silver);
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 1rem 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Enhanced print styles */
+@media print {
+  .admin-section,
+  .admin-toggle,
+  .btn:not(.print-btn),
+  .alert,
+  .file-upload-area,
+  .header .subtitle {
+    display: none !important;
+  }
+
+  .assignment-card {
+    border: 3px solid var(--holly-green) !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    page-break-inside: avoid;
+  }
+
+  .assignment-card::before {
+    opacity: 0.8 !important;
+    font-size: 3rem !important;
+  }
+
+  .recipient-name-large {
+    font-size: 3rem !important;
+    color: var(--cranberry-red) !important;
+  }
+
+  .bio-content {
+    border-left: 6px solid var(--gold) !important;
+    font-size: 1.2rem !important;
+  }
+
+  .header h1 {
+    font-size: 3rem !important;
+    margin-bottom: 2rem !important;
+  }
+}
+
+/* Responsive enhancements */
+@media (max-width: 768px) {
+  .name-input-container {
+    flex-direction: column;
+  }
+
+  .name-input-container .form-control {
+    min-width: auto;
+  }
+
+  .admin-toggle {
+    position: static;
+    margin: 2rem auto;
+  }
+
+  .recipient-name-large {
+    font-size: 1.5rem;
+  }
+
+  .assignment-card {
+    padding: 1.5rem;
+  }
+
+  .bio-content {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem 0.5rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .file-input-display {
+    padding: 2rem 1rem;
+  }
+
+  .upload-icon {
+    font-size: 2rem;
+  }
+}

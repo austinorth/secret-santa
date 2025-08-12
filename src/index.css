@@ -1,0 +1,299 @@
+:root {
+  --holly-green: #0f5132;
+  --pine-green: #1e5631;
+  --cranberry-red: #dc3545;
+  --snow-white: #ffffff;
+  --warm-cream: #f8f9fa;
+  --silver: #e9ecef;
+  --gold: #ffc107;
+  --deep-red: #8b0000;
+  --soft-gray: #6c757d;
+  --text-dark: #212529;
+
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: var(--text-dark);
+  background-color: var(--warm-cream);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--warm-cream) 0%, var(--silver) 100%);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  flex: 1;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.header h1 {
+  color: var(--holly-green);
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.header .subtitle {
+  color: var(--soft-gray);
+  font-size: 1.1rem;
+  font-weight: 300;
+}
+
+.card {
+  background: var(--snow-white);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  border: 1px solid var(--silver);
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--holly-green);
+  font-weight: 500;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid var(--silver);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--holly-green);
+  box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.1);
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.btn-primary {
+  background: var(--holly-green);
+  color: var(--snow-white);
+}
+
+.btn-primary:hover {
+  background: var(--pine-green);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 81, 50, 0.3);
+}
+
+.btn-secondary {
+  background: var(--cranberry-red);
+  color: var(--snow-white);
+}
+
+.btn-secondary:hover {
+  background: var(--deep-red);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--holly-green);
+  border: 2px solid var(--holly-green);
+}
+
+.btn-outline:hover {
+  background: var(--holly-green);
+  color: var(--snow-white);
+}
+
+.gift-info {
+  background: linear-gradient(135deg, var(--warm-cream), var(--snow-white));
+  border-left: 4px solid var(--cranberry-red);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+}
+
+.gift-info h3 {
+  color: var(--holly-green);
+  margin: 0 0 1rem 0;
+  font-size: 1.3rem;
+}
+
+.gift-info .recipient-name {
+  color: var(--cranberry-red);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.gift-info .bio {
+  color: var(--text-dark);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.admin-section {
+  border-top: 2px solid var(--silver);
+  padding-top: 2rem;
+  margin-top: 3rem;
+}
+
+.admin-section h2 {
+  color: var(--holly-green);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.file-upload-area {
+  border: 2px dashed var(--silver);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  transition: border-color 0.2s ease;
+}
+
+.file-upload-area:hover {
+  border-color: var(--holly-green);
+}
+
+.file-upload-area.dragover {
+  border-color: var(--cranberry-red);
+  background-color: rgba(220, 53, 69, 0.05);
+}
+
+.hidden {
+  display: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.alert-success {
+  background-color: rgba(15, 81, 50, 0.1);
+  border: 1px solid var(--holly-green);
+  color: var(--holly-green);
+}
+
+.alert-error {
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid var(--cranberry-red);
+  color: var(--cranberry-red);
+}
+
+.footer {
+  text-align: center;
+  padding: 2rem;
+  color: var(--soft-gray);
+  font-size: 0.9rem;
+}
+
+/* Print styles for gift info */
+@media print {
+  body {
+    background: white;
+  }
+
+  .container {
+    max-width: none;
+    margin: 0;
+    padding: 1rem;
+  }
+
+  .admin-section,
+  .btn,
+  .header .subtitle {
+    display: none !important;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+
+  .gift-info {
+    border: 2px solid var(--cranberry-red);
+    margin: 0;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+}
