@@ -32,6 +32,8 @@ interface AppState {
   loading: boolean;
   error: string;
   success: string;
+  csvUploadStatus: string;
+  fileUploadStatus: string;
 }
 
 function App() {
@@ -43,6 +45,8 @@ function App() {
     loading: false,
     error: "",
     success: "",
+    csvUploadStatus: "",
+    fileUploadStatus: "",
   });
 
   const [lookupName, setLookupName] = useState("");
@@ -59,7 +63,14 @@ function App() {
   }, []);
 
   const loadExistingData = async () => {
-    setState((prev) => ({ ...prev, loading: true, error: "", success: "" }));
+    setState((prev) => ({
+      ...prev,
+      loading: true,
+      error: "",
+      success: "",
+      csvUploadStatus: "",
+      fileUploadStatus: "",
+    }));
 
     try {
       // First try to load from public directory (GitHub Pages)
@@ -133,7 +144,13 @@ function App() {
       return;
     }
 
-    setState((prev) => ({ ...prev, loading: true, error: "", success: "" }));
+    setState((prev) => ({
+      ...prev,
+      loading: true,
+      csvUploadStatus: "Processing CSV file...",
+      error: "",
+      success: "",
+    }));
 
     try {
       const csvContent = await readCSVFile(file);
@@ -160,15 +177,15 @@ function App() {
         passphrase: newPassphrase,
         isDataLoaded: true,
         loading: false,
-        success: `Secret Santa assignments generated successfully! Use the download button below to save the encrypted file.`,
+        csvUploadStatus: `✅ Success! Generated assignments for ${assignments.length} participants.`,
+        success: "",
       }));
     } catch (error) {
       setState((prev) => ({
         ...prev,
         loading: false,
-        error:
-          "Error processing CSV: " +
-          (error instanceof Error ? error.message : String(error)),
+        csvUploadStatus: `❌ Error: ${error instanceof Error ? error.message : String(error)}`,
+        error: "",
       }));
     }
   };
@@ -177,12 +194,19 @@ function App() {
     if (!isValidEncryptedFile(file)) {
       setState((prev) => ({
         ...prev,
-        error: "Please upload a valid encrypted data file",
+        fileUploadStatus:
+          "❌ Please upload a valid encrypted data file (.enc, .json, .txt)",
       }));
       return;
     }
 
-    setState((prev) => ({ ...prev, loading: true, error: "", success: "" }));
+    setState((prev) => ({
+      ...prev,
+      loading: true,
+      fileUploadStatus: "🔄 Reading and decrypting file...",
+      error: "",
+      success: "",
+    }));
 
     try {
       const encryptedData = await readUploadedFile(file);
@@ -204,32 +228,32 @@ function App() {
             assignments,
             isDataLoaded: true,
             loading: false,
-            success: "Secret Santa data loaded successfully!",
+            fileUploadStatus: `✅ File loaded successfully! ${assignments.length} participants ready.`,
+            success: "",
           }));
         } catch (error) {
           setState((prev) => ({
             ...prev,
             loading: false,
-            error:
-              "Could not decrypt file with current passphrase: " +
-              (error instanceof Error ? error.message : String(error)),
+            fileUploadStatus: `❌ Decryption failed: ${error instanceof Error ? error.message : String(error)}`,
+            error: "",
           }));
         }
       } else {
         setState((prev) => ({
           ...prev,
           loading: false,
-          error:
-            "Please enter the passphrase first, then upload the file again.",
+          fileUploadStatus:
+            "❌ Please enter the passphrase first, then upload the file again.",
+          error: "",
         }));
       }
     } catch (error) {
       setState((prev) => ({
         ...prev,
         loading: false,
-        error:
-          "Error reading file: " +
-          (error instanceof Error ? error.message : String(error)),
+        fileUploadStatus: `❌ File read error: ${error instanceof Error ? error.message : String(error)}`,
+        error: "",
       }));
     }
   };
@@ -270,6 +294,8 @@ function App() {
       loading: false,
       error: "",
       success: "",
+      csvUploadStatus: "",
+      fileUploadStatus: "",
     });
     setLookupName("");
     setCurrentAssignment(null);
@@ -281,7 +307,7 @@ function App() {
   return (
     <div className="container">
       <div className="header">
-        <h1>🎅 Secret Santa</h1>
+        <h1>🎅 Blake Family Secret Santa</h1>
         <p className="subtitle">Discover your Christmas gift recipient</p>
       </div>
 
@@ -411,6 +437,8 @@ function App() {
                 mode: prev.mode === "admin" ? "lookup" : "admin",
                 error: "",
                 success: "",
+                csvUploadStatus: "",
+                fileUploadStatus: "",
               }))
             }
           >
@@ -424,172 +452,259 @@ function App() {
           <div className="card">
             <h2>🎅 Organizer Admin Panel</h2>
 
-            <div
-              className="alert"
-              style={{
-                backgroundColor: "rgba(255, 193, 7, 0.1)",
-                border: "1px solid var(--gold)",
-                color: "var(--text-dark)",
-              }}
-            >
-              <h4>📋 Setup Instructions</h4>
-              <ol
-                style={{
-                  textAlign: "left",
-                  marginLeft: "1rem",
-                  marginBottom: 0,
-                }}
-              >
-                <li>
-                  Download the CSV template and fill it with participant data
-                </li>
-                <li>
-                  Upload the completed CSV to generate encrypted assignments
-                </li>
-                <li>Save the generated file and passphrase</li>
-                <li>Add the encrypted file to your GitHub repo and deploy</li>
-              </ol>
-            </div>
-
+            {/* Step 1: CSV Upload */}
             <div className="form-group">
-              <label>Step 1: Upload CSV File (NAME, BIO, SO)</label>
+              <h3
+                style={{ color: "var(--holly-green)", marginBottom: "0.5rem" }}
+              >
+                Step 1: Create Secret Santa Assignments
+              </h3>
+              <p style={{ color: "var(--soft-gray)", marginBottom: "1rem" }}>
+                Upload a CSV file with participant data to generate encrypted
+                assignments
+              </p>
+
+              <div style={{ marginBottom: "1rem" }}>
+                <button
+                  className="btn btn-outline"
+                  onClick={downloadCSVTemplate}
+                  style={{ marginBottom: "1rem" }}
+                >
+                  📄 Download CSV Template
+                </button>
+              </div>
+
               <div className="file-upload-area">
                 <input
                   type="file"
                   accept=".csv,.txt"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    if (file) handleCSVUpload(file);
+                    if (file) {
+                      setState((prev) => ({ ...prev, csvUploadStatus: "" }));
+                      handleCSVUpload(file);
+                    }
                   }}
                 />
-                <p>
-                  📤 Upload a CSV file to generate new Secret Santa assignments
-                </p>
-                <button
-                  className="btn btn-outline mt-1"
-                  onClick={downloadCSVTemplate}
-                >
-                  📄 Download CSV Template
-                </button>
+                <p>📤 Choose CSV file (NAME, BIO, SO columns required)</p>
               </div>
+
+              {state.csvUploadStatus && (
+                <div
+                  className={`alert ${state.csvUploadStatus.includes("❌") ? "alert-error" : "alert-success"}`}
+                  style={{ marginTop: "1rem" }}
+                >
+                  {state.csvUploadStatus}
+                </div>
+              )}
             </div>
 
-            <div className="form-group">
-              <label htmlFor="passphrase-input">
-                Step 2: Passphrase (for loading existing data)
-              </label>
-              <input
-                id="passphrase-input"
-                type="text"
-                className="form-control"
-                value={state.passphrase}
-                onChange={(e) =>
-                  setState((prev) => ({ ...prev, passphrase: e.target.value }))
-                }
-                placeholder="Enter passphrase to decrypt existing data"
-              />
-            </div>
+            {/* Step 2: Load Existing Data */}
+            <div
+              className="form-group"
+              style={{
+                borderTop: "1px solid var(--silver)",
+                paddingTop: "2rem",
+              }}
+            >
+              <h3
+                style={{ color: "var(--holly-green)", marginBottom: "0.5rem" }}
+              >
+                Step 2: Load Existing Data (Optional)
+              </h3>
+              <p style={{ color: "var(--soft-gray)", marginBottom: "1rem" }}>
+                If you have previously generated Secret Santa data, load it here
+              </p>
 
-            <div className="form-group">
-              <label>Step 3: Upload Encrypted Data File</label>
+              <div className="form-group">
+                <label htmlFor="passphrase-input">Passphrase:</label>
+                <input
+                  id="passphrase-input"
+                  type="text"
+                  className="form-control"
+                  value={state.passphrase}
+                  onChange={(e) =>
+                    setState((prev) => ({
+                      ...prev,
+                      passphrase: e.target.value,
+                      fileUploadStatus: "",
+                    }))
+                  }
+                  placeholder="Enter the passphrase from when you generated the data"
+                />
+              </div>
+
               <div className="file-upload-area">
                 <input
                   type="file"
                   accept=".enc,.json,.txt"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    if (file) handleEncryptedFileUpload(file);
+                    if (file) {
+                      setState((prev) => ({ ...prev, fileUploadStatus: "" }));
+                      handleEncryptedFileUpload(file);
+                    }
                   }}
                 />
-                <p>📁 Upload the encrypted Secret Santa data file</p>
+                <p>📁 Choose your encrypted Secret Santa data file</p>
               </div>
+
+              {state.fileUploadStatus && (
+                <div
+                  className={`alert ${state.fileUploadStatus.includes("❌") ? "alert-error" : "alert-success"}`}
+                  style={{ marginTop: "1rem" }}
+                >
+                  {state.fileUploadStatus}
+                </div>
+              )}
             </div>
 
+            {/* Current Status */}
             {state.isDataLoaded && (
-              <div className="form-group">
+              <div
+                className="form-group"
+                style={{
+                  borderTop: "1px solid var(--silver)",
+                  paddingTop: "2rem",
+                }}
+              >
                 <div className="alert alert-success">
-                  <h3>✅ Current Data Status</h3>
-                  <p>
-                    <strong>Participants:</strong> {state.assignments.length}{" "}
-                    people loaded
-                  </p>
-                  <p>
-                    <strong>Passphrase:</strong>{" "}
-                    <code
-                      style={{
-                        backgroundColor: "rgba(255,255,255,0.3)",
-                        padding: "0.2rem 0.4rem",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      {state.passphrase}
-                    </code>
-                  </p>
-                  <p style={{ marginBottom: 0 }}>
-                    <strong>Status:</strong> Ready for participant lookup! 🎉
-                  </p>
+                  <h3 style={{ margin: "0 0 1rem 0" }}>✅ System Ready!</h3>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                      gap: "1rem",
+                    }}
+                  >
+                    <div>
+                      <p style={{ margin: "0 0 0.5rem 0" }}>
+                        <strong>{state.assignments.length} participants</strong>{" "}
+                        loaded and ready for lookup
+                      </p>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "0.9rem",
+                          color: "var(--soft-gray)",
+                        }}
+                      >
+                        Participants can now use the lookup feature to find
+                        their assignments
+                      </p>
+                    </div>
+                    <button className="btn btn-secondary" onClick={clearData}>
+                      🗑️ Clear All Data
+                    </button>
+                  </div>
                 </div>
-                <button className="btn btn-secondary" onClick={clearData}>
-                  🗑️ Clear All Data
-                </button>
               </div>
             )}
 
+            {/* Download Section */}
             {generatedFileData && (
-              <div className="form-group">
+              <div
+                className="form-group"
+                style={{
+                  borderTop: "1px solid var(--silver)",
+                  paddingTop: "2rem",
+                }}
+              >
                 <div
                   className="alert"
                   style={{
                     backgroundColor: "rgba(255, 193, 7, 0.1)",
-                    border: "1px solid var(--gold)",
+                    border: "2px solid var(--gold)",
                     color: "var(--text-dark)",
                   }}
                 >
-                  <h3>📥 Download Required</h3>
-                  <p>
-                    Your encrypted Secret Santa data has been generated! You
-                    must download this file and add it to your GitHub
-                    repository.
-                  </p>
-                  <p>
-                    <strong>Passphrase:</strong>{" "}
+                  <h3
+                    style={{
+                      color: "var(--holly-green)",
+                      marginBottom: "1rem",
+                    }}
+                  >
+                    🎉 Ready to Download!
+                  </h3>
+                  <p style={{ marginBottom: "1rem" }}>
+                    Your encrypted Secret Santa data has been generated!
+                    Download this file and replace
                     <code
                       style={{
-                        backgroundColor: "rgba(255,255,255,0.5)",
-                        padding: "0.2rem 0.4rem",
+                        background: "rgba(0,0,0,0.1)",
+                        padding: "2px 4px",
+                        margin: "0 4px",
+                      }}
+                    >
+                      public/secret-santa-data.enc
+                    </code>
+                    in your GitHub repository.
+                  </p>
+
+                  <div
+                    style={{
+                      background: "rgba(15, 81, 50, 0.1)",
+                      padding: "1rem",
+                      borderRadius: "8px",
+                      marginBottom: "1rem",
+                    }}
+                  >
+                    <p style={{ margin: "0 0 0.5rem 0", fontWeight: "bold" }}>
+                      🔑 Your Passphrase:
+                    </p>
+                    <code
+                      style={{
+                        backgroundColor: "var(--snow-white)",
+                        padding: "0.5rem",
                         borderRadius: "4px",
                         fontWeight: "bold",
+                        fontSize: "1.1rem",
+                        display: "block",
+                        border: "1px solid var(--holly-green)",
                       }}
                     >
                       {generatedFileData.passphrase}
                     </code>
-                  </p>
-                  <p style={{ marginBottom: "1rem" }}>
-                    <small>
-                      ⚠️ Save this passphrase! You'll need it to decrypt the
-                      data.
+                    <small
+                      style={{
+                        color: "var(--soft-gray)",
+                        marginTop: "0.5rem",
+                        display: "block",
+                      }}
+                    >
+                      ⚠️ Save this passphrase somewhere safe! You'll need it to
+                      load the data later.
                     </small>
-                  </p>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      downloadEncryptedFile(generatedFileData.encryptedData);
-                      setState((prev) => ({
-                        ...prev,
-                        success:
-                          "File downloaded! Replace 'public/secret-santa-data.enc' in your repo with this file.",
-                      }));
-                    }}
-                    style={{ marginRight: "1rem" }}
-                  >
-                    📥 Download Encrypted File
-                  </button>
-                  <button
-                    className="btn btn-outline"
-                    onClick={() => setGeneratedFileData(null)}
-                  >
-                    ✅ Done
-                  </button>
+                  </div>
+
+                  <div style={{ textAlign: "center" }}>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        downloadEncryptedFile(generatedFileData.encryptedData);
+                        setState((prev) => ({
+                          ...prev,
+                          success:
+                            "File downloaded! Don't forget to commit it to your repository.",
+                        }));
+                      }}
+                      style={{
+                        marginRight: "1rem",
+                        fontSize: "1.1rem",
+                        padding: "0.75rem 1.5rem",
+                      }}
+                    >
+                      📥 Download secret-santa-data.enc
+                    </button>
+                    <button
+                      className="btn btn-outline"
+                      onClick={() => setGeneratedFileData(null)}
+                    >
+                      ✅ Done
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
