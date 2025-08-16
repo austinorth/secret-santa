@@ -38,3 +38,8 @@ next-env.d.ts
 
 # Secret Santa generated files
 passphrase.txt
+secret-santa-passwords.csv
+secret-santa-passphrases.csv
+
+# Private word bank (keep secure)
+/private/

@@ -7,6 +7,12 @@ export interface EncryptedFileData {
   version: string;
 }
 
+export interface EncryptedFileDataV2 {
+  assignments: Record<string, string>;
+  timestamp: number;
+  version: string;
+}
+
 // Download encrypted data as a file
 export function downloadEncryptedFile(
   encryptedData: string,
@@ -47,7 +53,9 @@ export function downloadEncryptedFile(
 }
 
 // Read file content from uploaded file
-export function readUploadedFile(file: File): Promise<string> {
+export function readUploadedFile(
+  file: File,
+): Promise<EncryptedFileData | EncryptedFileDataV2> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
@@ -56,8 +64,14 @@ export function readUploadedFile(file: File): Promise<string> {
       try {
         // Validate it's a proper JSON file
         const parsed = JSON.parse(content);
-        if (parsed.data && parsed.timestamp && parsed.version) {
-          resolve(parsed.data);
+
+        // Check for v2.0 format (individual assignments)
+        if (parsed.assignments && parsed.timestamp && parsed.version) {
+          resolve(parsed as EncryptedFileDataV2);
+        }
+        // Check for v1.0 format (legacy single passphrase)
+        else if (parsed.data && parsed.timestamp && parsed.version) {
+          resolve(parsed as EncryptedFileData);
         } else {
           reject(new Error("Invalid file format: missing required fields"));
         }
@@ -143,7 +157,9 @@ Charlie Wilson,"Musician and reader. Gift ideas: music gear, books, vinyl record
 }
 
 // Check if we're running on GitHub Pages and try to load existing data
-export async function loadExistingSecretSantaData(): Promise<string | null> {
+export async function loadExistingSecretSantaData(): Promise<
+  EncryptedFileData | EncryptedFileDataV2 | null
+> {
   try {
     // Try to load from the public directory (for GitHub Pages deployment)
     const response = await fetch("./secret-santa-data.enc");
@@ -152,8 +168,15 @@ export async function loadExistingSecretSantaData(): Promise<string | null> {
       const content = await response.text();
       // Validate it's proper format
       const parsed = JSON.parse(content);
+
+      // Check for v2.0 format (individual assignments)
+      if (parsed.assignments && parsed.timestamp && parsed.version) {
+        return parsed as EncryptedFileDataV2;
+      }
+
+      // Check for v1.0 format (legacy single passphrase)
       if (parsed.data && parsed.timestamp && parsed.version) {
-        return parsed.data;
+        return parsed as EncryptedFileData;
       }
     }
   } catch (error) {

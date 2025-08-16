@@ -1,4 +1,4 @@
-// Encryption utilities for Secret Santa data
+// Encryption utilities for Secret Santa data with individual passphrase support
 // Uses Web Crypto API with AES-GCM for secure encryption
 
 const ALGORITHM = "AES-GCM";
@@ -41,6 +41,15 @@ function generateSalt(): Uint8Array {
 // Generate a random IV
 function generateIV(): Uint8Array {
   return crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+}
+
+// Hash a passphrase to create a lookup key
+export async function hashPassphrase(passphrase: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(passphrase);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 // Encrypt data with a passphrase
@@ -113,40 +122,39 @@ export async function decryptData(
   }
 }
 
-// Generate a random passphrase for the application
-export function generatePassphrase(): string {
-  const words = [
-    "snowflake",
-    "mistletoe",
-    "eggnog",
-    "tinsel",
-    "garland",
-    "ornament",
-    "wreath",
-    "sleigh",
-    "reindeer",
-    "chimney",
-    "stockings",
-    "fireplace",
-    "gingerbread",
-    "peppermint",
-    "holly",
-    "ivy",
-    "pine",
-    "spruce",
-    "angel",
-    "star",
-    "candle",
-    "ribbon",
-    "gift",
-    "present",
-  ];
+// Find and decrypt individual assignment using passphrase
+export async function findAndDecryptAssignment(
+  encryptedAssignments: Record<string, string>,
+  passphrase: string,
+): Promise<string | null> {
+  try {
+    // Hash the passphrase to find the matching assignment
+    const passphraseHash = await hashPassphrase(passphrase);
 
-  const selectedWords = [];
-  for (let i = 0; i < 4; i++) {
-    const randomIndex = Math.floor(Math.random() * words.length);
-    selectedWords.push(words[randomIndex]);
+    // Find the encrypted assignment for this passphrase
+    const encryptedAssignment = encryptedAssignments[passphraseHash];
+
+    if (!encryptedAssignment) {
+      return null; // No assignment found for this passphrase
+    }
+
+    // Decrypt the assignment
+    const decryptedAssignment = await decryptData(
+      encryptedAssignment,
+      passphrase,
+    );
+    return decryptedAssignment;
+  } catch (error) {
+    throw new Error(
+      `Failed to decrypt assignment: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
+}
 
-  return selectedWords.join("-") + "-" + Math.floor(Math.random() * 1000);
+// Legacy function for backward compatibility with old format (v1.0)
+export async function decryptLegacyData(
+  encryptedData: string,
+  passphrase: string,
+): Promise<string> {
+  return decryptData(encryptedData, passphrase);
 }

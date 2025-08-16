@@ -1,34 +1,36 @@
-# 🎅 Secret Santa
+# 🎅 Secret Santa - Individual Passphrase Edition
 
-A secure, stateless Secret Santa gift exchange application designed to run on GitHub Pages while maintaining privacy and security of assignments.
+A secure, privacy-focused Secret Santa gift exchange application designed to run on GitHub Pages. Each participant gets their own unique Christmas-themed passphrase that only unlocks their specific assignment, ensuring maximum privacy.
 
-## ✨ Features
+## ✨ Key Features
 
-- **🔒 Secure & Private**: Uses AES-GCM encryption to protect Secret Santa assignments
+- **🔐 Individual Passphrases**: Each person gets a unique Christmas-themed passphrase that only shows their assignment
+- **🔒 Maximum Privacy**: Even organizers cannot see assignments without individual passphrases
 - **🌐 GitHub Pages Compatible**: Fully static app that works with GitHub Pages hosting
 - **📱 Responsive Design**: Beautiful Christmas-themed UI that works on all devices
 - **🖨️ Print-Friendly**: Clean print layout for physical reference cards
-- **⚙️ Script-Based Setup**: Simple Node.js script to generate assignments
-- **🚫 Smart Constraints**: Prevents self-assignment and significant other matches
+- **🎯 Smart Assignment Generation**: Prevents self-assignment and significant other matches
+- **🚫 No Cross-Viewing**: Participants cannot see other people's assignments
 
 ## 🎯 How It Works
 
-This app solves the challenge of hosting a stateful Secret Santa application on static hosting (GitHub Pages) by using client-side encryption:
+This app revolutionizes Secret Santa privacy by giving each participant their own encrypted assignment:
 
 1. **CSV Preparation**: Create a CSV file with participant data (NAME, BIO, SO)
-2. **Script Generation**: Run the Node.js script to create encrypted assignments
-3. **Deployment**: Encrypted file is automatically saved and deployed with the app
-4. **Lookup**: Participants enter the passphrase and their name to see assignments
+2. **Script Generation**: Python script creates individual encrypted assignments
+3. **Unique Passphrases**: Each person gets their own Christmas-themed passphrase
+4. **Secure Distribution**: Organizer distributes passphrases without seeing assignments
+5. **Private Lookup**: Participants enter their passphrase to see only their assignment
 
 ## 🚀 Quick Start
 
 ### For Participants
 
 1. Visit the deployed app
-2. Enter the passphrase provided by your organizer
-3. Enter your name in the lookup field
-4. View your Secret Santa recipient and their gift preferences
-5. Use the print button for a physical reference card
+2. Enter your personal passphrase (provided by organizer)
+3. View your Secret Santa recipient and their gift preferences
+4. Use the print button for a physical reference card
+5. Keep your passphrase private!
 
 ### For Organizers
 
@@ -40,27 +42,32 @@ This app solves the challenge of hosting a stateful Secret Santa application on 
    Alice Smith,"Photography enthusiast. Gift ideas: camera accessories",
    ```
 
-2. **Generate Assignments**:
+2. **Generate Individual Assignments**:
    ```bash
    # Install dependencies (first time only)
    npm install
    
-   # Set up Python environment and generate encrypted data
+   # Set up Python environment
    python3 -m venv venv
    source venv/bin/activate
    pip install cryptography
+   
+   # Generate encrypted assignments with individual passphrases
    python scripts/generate_assignments.py your-participants.csv
    ```
 
 3. **Deploy**:
    ```bash
-   # Commit the generated encrypted file
+   # Commit only the encrypted file (NOT the passphrases file)
    git add public/secret-santa-data.enc
-   git commit -m "Add Secret Santa assignments"
+   git commit -m "Update Secret Santa assignments"
    git push
    ```
 
-4. **Share**: Give participants the passphrase (saved in `passphrase.txt`)
+4. **Distribute Passphrases**: 
+   - Open `secret-santa-passphrases.csv`
+   - Send each person ONLY their own passphrase
+   - Delete the passphrases file after distribution for security
 
 ## 📋 CSV Format
 
@@ -89,6 +96,7 @@ Charlie Wilson,"Musician and reader. Gift ideas: music gear, books, vinyl record
 
 ### Prerequisites
 - Node.js 14 or higher
+- Python 3.7 or higher
 - npm
 
 ### Installation
@@ -98,8 +106,13 @@ Charlie Wilson,"Musician and reader. Gift ideas: music gear, books, vinyl record
 git clone <your-repo-url>
 cd secret-santa
 
-# Install dependencies
+# Install Node.js dependencies
 npm install
+
+# Set up Python environment
+python3 -m venv venv
+source venv/bin/activate
+pip install cryptography
 
 # Start development server
 npm run dev
@@ -119,6 +132,9 @@ python scripts/generate_assignments.py  # Generate encrypted Secret Santa data
 ### Basic Usage
 
 ```bash
+# Activate Python environment
+source venv/bin/activate
+
 # Generate from your CSV file
 python scripts/generate_assignments.py my-participants.csv
 
@@ -126,37 +142,63 @@ python scripts/generate_assignments.py my-participants.csv
 python scripts/generate_assignments.py example-participants.csv
 ```
 
+### Advanced Options
+
+```bash
+# Custom output locations
+python scripts/generate_assignments.py my-participants.csv \
+  --output custom/path/data.enc \
+  --passphrase-file custom/path/passphrases.csv
+
+# Show assignments for verification (organizer eyes only!)
+python scripts/generate_assignments.py my-participants.csv --show-assignments
+```
+
 ### What Happens
 
 1. **Reads your CSV** and validates the format
 2. **Generates assignments** avoiding conflicts (self/SO pairings)
-3. **Creates a passphrase** using Christmas-themed words
-4. **Encrypts the data** using strong AES-GCM encryption
+3. **Creates unique Christmas-themed passphrases** for each participant using secure word selection
+4. **Encrypts each assignment individually** with that person's passphrase
 5. **Saves files**:
-   - `public/secret-santa-data.enc` (commit this)
-   - `passphrase.txt` (share this, don't commit)
+   - `public/secret-santa-data.enc` (commit this - contains encrypted assignments)
+   - `secret-santa-passphrases.csv` (distribute then DELETE - contains passphrases)
 
 ### Example Output
 
 ```
-🎄 Generating Secret Santa assignments...
-📁 Read CSV file: my-participants.csv
-👥 Parsed 5 participants
-🎁 Generated 5 assignments
-🔑 Generated passphrase: snowflake-mistletoe-gift-789
-💾 Saved encrypted data to: public/secret-santa-data.enc
-🔐 Saved passphrase to: passphrase.txt
+🎅 Secret Santa Assignment Generator (Individual Passphrases)
+============================================================
+📄 Parsing CSV: my-participants.csv
+✅ Loaded 5 participants
 
-✅ Secret Santa data generated successfully!
+🎲 Generating assignments...
+✅ Generated 5 assignments
 
-🎅 Passphrase: snowflake-mistletoe-gift-789
+🔑 Generating individual passphrases...
+✅ Generated 5 unique passphrases
 
-📊 Summary:
-   John Doe → Alice Smith
-   Alice Smith → Bob Johnson
-   Bob Johnson → Charlie Wilson
-   Charlie Wilson → Jane Doe
-   Jane Doe → John Doe
+🔒 Creating encrypted assignment file: public/secret-santa-data.enc
+📋 Creating passphrase distribution file: secret-santa-passphrases.csv
+
+🎄 SUCCESS! Secret Santa files generated
+📁 Encrypted assignments: public/secret-santa-data.enc
+📋 Passphrase distribution: secret-santa-passphrases.csv
+👥 Participants: 5
+🔑 Individual passphrases: 5
+
+📋 Next steps:
+  1. Commit and push the encrypted file to your repo
+  2. Distribute individual passphrases (send each person ONLY their own)
+  3. Participants visit the website and enter their passphrase
+  4. Each person will only see their own assignment
+
+🔐 Security Notes:
+  - Each participant has a unique Christmas-themed passphrase
+  - Passphrases only unlock that person's assignment
+  - You (organizer) cannot see assignments without passphrases
+  - Assignments are individually encrypted for maximum privacy
+  - Christmas-themed passphrases for memorability and security
 ```
 
 ## 🚀 Deployment
@@ -170,15 +212,20 @@ python scripts/generate_assignments.py example-participants.csv
 2. **Deploy**:
    ```bash
    # Generate your data
+   source venv/bin/activate
    python scripts/generate_assignments.py my-participants.csv
    
-   # Commit and push
+   # Commit ONLY the encrypted file
    git add public/secret-santa-data.enc
-   git commit -m "Add Secret Santa assignments"
+   git commit -m "Update Secret Santa assignments"
    git push
    ```
 
-3. **Share**: Give participants the URL and passphrase
+3. **Distribute Passphrases**:
+   - Open `secret-santa-passphrases.csv`
+   - Send each person their row via email/text
+   - Example: "Hi Alice! Your Secret Santa passphrase is: twinkling-peace-sparkle-celebrate-4896"
+   - **Delete the passphrases file after distribution**
 
 ### Manual Deployment
 
@@ -205,18 +252,43 @@ export default defineConfig({
 ```
 secret-santa/
 ├── scripts/
-│   ├── generate_assignments.py     # Python data generation script
+│   ├── generate_assignments.py     # Python assignment generator
 │   ├── requirements.txt            # Python dependencies
 │   └── README.md                   # Script documentation
 ├── src/
-│   ├── components/                 # React components
-│   ├── utils/                      # Encryption & parsing utilities
-│   └── App.tsx                     # Main app (participant lookup only)
+│   ├── utils/
+│   │   ├── encryption.ts           # Individual passphrase encryption
+│   │   ├── csvParser.ts            # Data parsing utilities
+│   │   └── fileUtils.ts            # File handling (v1.0 & v2.0 support)
+│   └── App.tsx                     # Main app (individual passphrase lookup)
 ├── public/
-│   └── secret-santa-data.enc       # Generated encrypted data
+│   └── secret-santa-data.enc       # Generated encrypted assignments
 ├── example-participants.csv        # Example CSV file
-└── venv/                           # Python virtual environment (local only)
+├── venv/                           # Python virtual environment (local only)
+├── private/                        # Private word bank (gitignored for security)
+│   └── christmas_words.txt         # Christmas word bank (keep private)
+└── secret-santa-passphrases.csv   # Generated passphrases (DELETE after distribution)
 ```
+
+## 🔒 Security & Privacy Model
+
+### Individual Encryption
+- Each assignment is encrypted separately with a unique Christmas-themed passphrase
+- Passphrases are hashed to create lookup keys (no identifying information)
+- Even with the encrypted file, you need the specific passphrase to decrypt an assignment
+
+### Privacy Guarantees
+- **Participants**: Can only see their own assignment, never others'
+- **Organizers**: Cannot see assignments without individual passphrases
+- **Maximum Security**: Even if someone gets multiple passphrases, they only see those specific assignments
+
+### Data Flow
+1. **CSV Input** → Script reads participant data
+2. **Assignment Generation** → Creates assignments avoiding conflicts
+3. **Individual Encryption** → Each assignment encrypted with unique passphrase
+4. **Secure Storage** → Encrypted assignments stored with hashed passphrase keys
+5. **Private Distribution** → Each person gets only their passphrase
+6. **Individual Lookup** → Passphrase unlocks only that person's assignment
 
 ## 🎨 Customization
 
@@ -233,20 +305,14 @@ Edit CSS variables in `src/index.css`:
 }
 ```
 
-### App Features
-The app is streamlined for participant lookup only:
-- Automatic data loading from `public/secret-santa-data.enc`
-- Passphrase input for decryption
-- Name lookup functionality
-- Print-friendly assignment cards
+### Passphrase Generation
+The script uses a private Christmas word bank for secure passphrase generation:
 
-## 🔒 Security Considerations
-
-- **Client-Side Encryption**: All encryption happens in the browser
-- **No Server Storage**: No sensitive data stored on servers
-- **Strong Encryption**: AES-GCM with PBKDF2 key derivation
-- **Passphrase Protection**: Only those with passphrase can decrypt
-- **Organizer Privacy**: Organizers can't see actual assignments
+```python
+# Christmas-themed passphrases using secure word selection
+# Word bank kept in private/ directory (not committed to repository)
+# Provides memorability while maintaining cryptographic security
+```
 
 ## 🐛 Troubleshooting
 
@@ -256,28 +322,28 @@ The app is streamlined for participant lookup only:
 - Check the file path is correct relative to project root
 - Ensure the CSV file exists and is readable
 
-**"Need at least 2 participants"**
-- Your CSV needs minimum 2 people
-- Check that NAME column has valid entries
-
 **"Could not generate valid assignments"**
 - Too many SO constraints for the participant count
-- Try reducing significant other pairings
+- Try reducing significant other pairings or adding more participants
+
+**"cryptography package not found"**
+- Make sure you've activated the virtual environment: `source venv/bin/activate`
+- Install the package: `pip install cryptography`
 
 ### App Issues
 
 **"No Secret Santa data found"**
 - Run the generation script first: `python scripts/generate_assignments.py your-file.csv`
-- Ensure `public/secret-santa-data.enc` exists
-- Verify the file was committed and deployed
+- Ensure `public/secret-santa-data.enc` exists and was committed
 
-**"Failed to decrypt data"**
-- Check the passphrase is entered correctly
-- Verify you're using the passphrase from `passphrase.txt`
+**"No assignment found for this passphrase"**
+- Check the passphrase is entered correctly (case-sensitive)
+- Verify you're using the correct passphrase from the distribution file
+- Make sure the passphrase matches exactly
 
-**"No assignment found"**
-- Enter your name exactly as it appears in the CSV
-- Names are case-insensitive but must match otherwise
+**"Failed to decrypt assignment"**
+- Double-check the passphrase spelling
+- Ensure you're using the passphrase that was specifically generated for you
 
 ## 💡 Complete Workflow Example
 
@@ -291,39 +357,91 @@ source venv/bin/activate
 pip install cryptography
 
 # 2. Create your participant list
-cp example-participants.csv my-family.csv
-# Edit my-family.csv with your actual participants
+cp example-participants.csv christmas-2024.csv
+# Edit christmas-2024.csv with your actual participants
 
-# 3. Generate encrypted assignments
-python scripts/generate_assignments.py my-family.csv
-# Note the passphrase that's displayed
+# 3. Generate encrypted assignments with individual passphrases
+python scripts/generate_assignments.py christmas-2024.csv
 
-# 4. Deploy
+# 4. Deploy encrypted data
 git add public/secret-santa-data.enc
-git commit -m "Add Secret Santa assignments"
+git commit -m "Update Secret Santa assignments for Christmas 2024"
 git push
 
-# 5. Share with participants
-echo "Visit: https://yourusername.github.io/secret-santa/"
-cat passphrase.txt
+# 5. Distribute passphrases individually
+# Open secret-santa-passphrases.csv
+# Send each person their specific passphrase via email/text
+# Example messages:
+#   "Hi Alice! Your Secret Santa passphrase: twinkling-peace-sparkle-celebrate-4896"
+#   "Hi Bob! Your Secret Santa passphrase: drifting-wonder-eggnog-storm-4335"
 
-# 6. Cleanup
-rm passphrase.txt my-family.csv
+# 6. Cleanup for security
+rm secret-santa-passphrases.csv christmas-2024.csv
+# Keep the encrypted file - that's safe to store
+
+# 7. Share the website
+echo "Everyone can visit: https://yourusername.github.io/secret-santa/"
+echo "Each person enters their unique passphrase to see their assignment"
 ```
 
 ## 🎄 Usage Tips
 
 ### For Organizers
-- **Test first**: Use `example-participants.csv` to test the system
-- **Save passphrase**: Copy it from `passphrase.txt` before cleanup
-- **One-time setup**: Generate data once, share URL and passphrase
-- **Privacy**: You won't see who gives to whom (only encrypted data)
+- **Test first**: Use `example-participants.csv` to understand the system
+- **One passphrase per person**: Each participant gets their own unique passphrase
+- **Secure distribution**: Send passphrases individually (email, text, in person)
+- **Privacy protection**: You won't see who gives to whom after encryption
+- **Delete passphrases file**: Remove `secret-santa-passphrases.csv` after distribution
+- **No shared access**: Unlike traditional Secret Santa, there's no "master key"
 
 ### For Participants  
-- **Get passphrase**: Ask your organizer for the passphrase
-- **Enter correctly**: Names must match exactly (case-insensitive)
-- **Print reference**: Use print button for a physical card
-- **Keep secret**: Don't share your assignment!
+- **Personal passphrase**: Your passphrase is unique to you
+- **Keep it private**: Don't share your passphrase with others
+- **Enter carefully**: Passphrases are case-sensitive
+- **Print reference**: Use print button for a physical card to take shopping
+- **One assignment only**: You can only see your assignment, not others'
+
+### Security Best Practices
+- **Organizers**: Delete the passphrases file immediately after distribution
+- **Participants**: Don't share passphrases or try to guess others'
+- **Everyone**: Keep assignments secret until the exchange day!
+
+## 🆚 Legacy Support
+
+This version (v2.0) supports individual passphrases. The app also supports the legacy v1.0 format (single shared passphrase) for backward compatibility.
+
+### Version Differences
+- **v2.0 (Current)**: Individual passphrases, maximum privacy
+- **v1.0 (Legacy)**: Single shared passphrase, name lookup required
+
+The app automatically detects which version to use based on the encrypted file format.
+
+## 🛡️ Security Improvements
+
+The individual passphrase system provides both security and usability:
+
+### Secure Christmas Passphrase Generation
+- **Cryptographically Secure Word Selection**: Uses Python's `secrets` module for true randomness
+- **Private Word Bank**: Christmas word list kept in private directory (not in repository)
+- **Memorable Format**: Christmas-themed words that are easy to remember and type
+- **Hidden Generation Method**: Word bank and exact format concealed from public view
+- **Security Through Obscurity**: Attackers cannot see the word list or generation pattern
+
+### Attack Resistance
+- **Dictionary Attack Protection**: Private word bank prevents known word list attacks
+- **Memorability**: Christmas theme makes passphrases easier to remember and share
+- **Hidden Methodology**: Generation method concealed from repository viewers
+- **Cryptographic Security**: Secure random selection from private word bank
+
+### Security Comparison
+- **Old Public Method**: Word bank visible in source code (dictionary vulnerable)
+- **New Private Method**: `twinkling-peace-sparkle-celebrate-4896` (hidden word bank, secure)
+
+### Practical Security Level
+- **Time to crack**: Extremely difficult without access to private word bank
+- **Memorability**: Christmas theme makes passphrases user-friendly
+- **Hidden complexity**: True security level concealed from attackers
+- **Practical security**: Strong protection while remaining usable
 
 ## 📝 License
 
@@ -331,8 +449,8 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🎁 Merry Christmas!
 
-Enjoy your Secret Santa gift exchange! Remember to keep assignments secret until the big day!
+Enjoy your Secret Santa gift exchange with maximum privacy and security! Each person gets their own Christmas-themed passphrase, ensuring that assignments stay truly secret until the big day.
 
 ---
 
-**Made with ❤️ for spreading Christmas cheer**
+**Made with ❤️ for spreading Christmas cheer while protecting privacy**

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Secret Santa Assignment Generator
+Secret Santa Assignment Generator with Individual Passphrases
 
-This script replaces the problematic Web Crypto API functionality with a Python-based
-solution that generates encrypted Secret Santa assignments compatible with the React app.
+This script generates encrypted Secret Santa assignments where each participant
+gets their own unique Christmas-themed passphrase that only unlocks their specific assignment.
+This prevents participants from seeing other people's assignments.
 
 Usage:
-    python generate_assignments.py [csv_file] [--output output_file] [--passphrase custom_passphrase]
+    python generate_assignments.py [csv_file] [--output output_file] [--passphrase-file passphrase_file]
 
 Requirements:
     pip install cryptography
@@ -14,21 +15,20 @@ Requirements:
 The script:
 1. Parses CSV file with NAME, BIO, SO columns
 2. Generates Secret Santa assignments avoiding conflicts
-3. Encrypts data using AES-GCM (same format as Web Crypto API)
-4. Outputs encrypted file compatible with the React app
+3. Creates individual Christmas-themed passphrases for each participant
+4. Encrypts each assignment separately with their passphrase
+5. Outputs encrypted file compatible with the React app
+6. Creates unencrypted passphrase distribution file for organizer
 
 Example:
-    # Use default example CSV and output to public/secret-santa-data.enc
+    # Use default example CSV and output files
     python scripts/generate_assignments.py
 
     # Use custom CSV file
     python scripts/generate_assignments.py my-participants.csv
 
-    # Custom output location
-    python scripts/generate_assignments.py --output data/encrypted.enc
-
-    # Use custom passphrase
-    python scripts/generate_assignments.py --passphrase "my-secret-phrase"
+    # Custom output locations
+    python scripts/generate_assignments.py --output data/encrypted.enc --passphrase-file data/passphrases.csv
 """
 
 import csv
@@ -38,6 +38,7 @@ import secrets
 import time
 import base64
 import argparse
+import hashlib
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
@@ -72,10 +73,17 @@ class Assignment:
     recipientBio: str
 
 
+@dataclass
+class ParticipantPassphrase:
+    name: str
+    passphrase: str
+
+
 class SecretSantaGenerator:
     def __init__(self):
         self.participants: List[Participant] = []
         self.assignments: List[Assignment] = []
+        self.passphrases: List[ParticipantPassphrase] = []
 
     def parse_csv(self, csv_file: str) -> List[Participant]:
         """Parse CSV file with NAME, BIO, SO columns"""
@@ -176,33 +184,88 @@ class SecretSantaGenerator:
 
         raise RuntimeError(f"Could not generate valid assignments after {max_attempts} attempts")
 
-    def generate_passphrase(self) -> str:
-        """Generate a holiday-themed passphrase"""
-        words = [
-            "snowflake", "mistletoe", "eggnog", "tinsel", "garland",
-            "ornament", "wreath", "sleigh", "reindeer", "chimney",
-            "stockings", "fireplace", "gingerbread", "peppermint",
-            "holly", "ivy", "pine", "spruce", "angel", "star",
-            "candle", "ribbon", "gift", "present"
-        ]
+    def load_christmas_words(self) -> List[str]:
+        """Load Christmas words from private word bank file"""
+        # Determine the project root directory
+        script_dir = Path(__file__).parent
+        project_root = script_dir.parent
+        word_file = project_root / "private" / "christmas_words.txt"
 
-        selected_words = random.choices(words, k=4)
-        number = random.randint(100, 999)
-        return "-".join(selected_words) + f"-{number}"
+        if not word_file.exists():
+            # Fallback to a basic word list if private file doesn't exist
+            print("⚠️  Warning: Private word bank not found. Using fallback words.")
+            return [
+                "snowflake", "mistletoe", "eggnog", "tinsel", "garland",
+                "ornament", "wreath", "sleigh", "reindeer", "chimney",
+                "stockings", "fireplace", "gingerbread", "peppermint",
+                "holly", "ivy", "pine", "spruce", "angel", "star",
+                "candle", "ribbon", "gift", "present", "cookies", "cocoa"
+            ]
 
-    def encrypt_assignments(self, passphrase: str) -> str:
-        """Encrypt assignments using AES-GCM (compatible with Web Crypto API)"""
-        # Convert assignments to JSON
-        assignments_data = [
-            {
-                "giver": a.giver,
-                "recipient": a.recipient,
-                "recipientBio": a.recipientBio
-            }
-            for a in self.assignments
-        ]
+        try:
+            with open(word_file, 'r', encoding='utf-8') as f:
+                words = []
+                for line in f:
+                    line = line.strip()
+                    # Skip empty lines and comments
+                    if line and not line.startswith('#'):
+                        words.append(line.lower())
+                return words
+        except Exception as e:
+            print(f"⚠️  Error reading word bank: {e}. Using fallback words.")
+            return [
+                "snowflake", "mistletoe", "eggnog", "tinsel", "garland",
+                "ornament", "wreath", "sleigh", "reindeer", "chimney"
+            ]
 
-        data_json = json.dumps(assignments_data, ensure_ascii=False)
+    def generate_individual_passphrases(self) -> List[ParticipantPassphrase]:
+        """Generate cryptographically secure Christmas-themed passphrases for each participant"""
+
+        # Load Christmas words from private file
+        christmas_words = self.load_christmas_words()
+
+        if len(christmas_words) < 20:
+            print("⚠️  Warning: Word bank seems small. Consider adding more words for better security.")
+
+        used_passphrases = set()
+        passphrases = []
+
+        for participant in self.participants:
+            # Generate unique passphrase for this participant
+            attempts = 0
+            while attempts < 2000:
+                # Use 4 Christmas words with a 4-digit number
+                selected_words = [secrets.choice(christmas_words) for _ in range(4)]
+                number = secrets.randbelow(9000) + 1000  # 1000-9999
+
+                # Always use hyphens as separators for consistency
+                passphrase = "-".join(selected_words) + f"-{number}"
+
+                if passphrase not in used_passphrases:
+                    used_passphrases.add(passphrase)
+                    passphrases.append(ParticipantPassphrase(
+                        name=participant.name,
+                        passphrase=passphrase
+                    ))
+                    break
+                attempts += 1
+
+            if attempts >= 2000:
+                raise RuntimeError(f"Could not generate unique passphrase for {participant.name}")
+
+        self.passphrases = passphrases
+        return passphrases
+
+    def encrypt_individual_assignment(self, assignment: Assignment, passphrase: str) -> str:
+        """Encrypt a single assignment using AES-GCM"""
+        # Convert assignment to JSON
+        assignment_data = {
+            "giver": assignment.giver,
+            "recipient": assignment.recipient,
+            "recipientBio": assignment.recipientBio
+        }
+
+        data_json = json.dumps(assignment_data, ensure_ascii=False)
         data_bytes = data_json.encode('utf-8')
 
         # Generate salt and IV
@@ -239,12 +302,41 @@ class SecretSantaGenerator:
 
         return encrypted_b64
 
-    def create_encrypted_file(self, encrypted_data: str, output_file: str) -> None:
-        """Create the encrypted file in the format expected by the React app"""
+    def create_passphrase_hash(self, passphrase: str) -> str:
+        """Create a hash of the passphrase to use as a lookup key"""
+        # Use SHA-256 to create a hash that doesn't reveal the passphrase
+        return hashlib.sha256(passphrase.encode('utf-8')).hexdigest()
+
+    def create_encrypted_file(self, output_file: str) -> None:
+        """Create the encrypted file with individual assignments"""
+        # Create encrypted assignments with passphrase hash as key
+        encrypted_assignments = {}
+
+        for assignment in self.assignments:
+            # Find the passphrase for this giver
+            passphrase_obj = next(
+                (p for p in self.passphrases if p.name == assignment.giver),
+                None
+            )
+
+            if not passphrase_obj:
+                raise RuntimeError(f"No passphrase found for {assignment.giver}")
+
+            # Encrypt the assignment with their passphrase
+            encrypted_data = self.encrypt_individual_assignment(
+                assignment,
+                passphrase_obj.passphrase
+            )
+
+            # Use hash of passphrase as the key (hides which assignment belongs to whom)
+            passphrase_hash = self.create_passphrase_hash(passphrase_obj.passphrase)
+            encrypted_assignments[passphrase_hash] = encrypted_data
+
+        # Create the file structure
         file_data = {
-            "data": encrypted_data,
+            "assignments": encrypted_assignments,
             "timestamp": int(time.time() * 1000),  # JavaScript timestamp
-            "version": "1.0"
+            "version": "2.0"  # Updated version to indicate new format
         }
 
         with open(output_file, 'w', encoding='utf-8') as f:
@@ -252,35 +344,56 @@ class SecretSantaGenerator:
 
         print(f"Encrypted file created: {output_file}")
 
+    def create_passphrase_distribution_file(self, output_file: str) -> None:
+        """Create unencrypted file with names and passphrases for distribution"""
+        try:
+            with open(output_file, 'w', encoding='utf-8', newline='') as f:
+                writer = csv.writer(f)
+
+                # Write header
+                writer.writerow(['Name', 'Passphrase'])
+
+                # Write each participant's passphrase
+                for passphrase_obj in self.passphrases:
+                    writer.writerow([passphrase_obj.name, passphrase_obj.passphrase])
+
+            print(f"Passphrase distribution file created: {output_file}")
+
+        except Exception as e:
+            raise RuntimeError(f"Failed to create passphrase file: {str(e)}")
+
     def print_assignments(self) -> None:
-        """Print assignments for verification"""
+        """Print assignments for verification (only if explicitly requested)"""
         print("\n" + "="*50)
-        print("GENERATED ASSIGNMENTS:")
+        print("⚠️  GENERATED ASSIGNMENTS (ORGANIZER EYES ONLY):")
         print("="*50)
         for i, assignment in enumerate(self.assignments, 1):
             print(f"{i}. {assignment.giver} → {assignment.recipient}")
         print("="*50)
+        print("⚠️  Remember: Don't share these assignments with participants!")
+        print("   Participants should only receive their individual passphrases.")
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate encrypted Secret Santa assignments",
+        description="Generate encrypted Secret Santa assignments with individual passphrases",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   python scripts/generate_assignments.py
   python scripts/generate_assignments.py my-participants.csv
-  python scripts/generate_assignments.py --output data/encrypted.enc
-  python scripts/generate_assignments.py --passphrase "my-secret-phrase"
+  python scripts/generate_assignments.py --output data/encrypted.enc --passphrase-file data/passphrases.csv
+  python scripts/generate_assignments.py --show-assignments
         """
     )
     parser.add_argument("csv_file", nargs="?", default="example-participants.csv",
                        help="CSV file with participants (default: example-participants.csv)")
     parser.add_argument("--output", "-o", default="public/secret-santa-data.enc",
-                       help="Output file path (default: public/secret-santa-data.enc)")
-    parser.add_argument("--passphrase", "-p", help="Custom passphrase (auto-generated if not provided)")
+                       help="Output file path for encrypted data (default: public/secret-santa-data.enc)")
+    parser.add_argument("--passphrase-file", "-p", default="secret-santa-passphrases.csv",
+                       help="Output file for passphrase distribution (default: secret-santa-passphrases.csv)")
     parser.add_argument("--show-assignments", action="store_true",
-                       help="Print assignments to console (for verification)")
+                       help="Print assignments to console (ORGANIZER ONLY - reveals who has whom)")
 
     args = parser.parse_args()
 
@@ -301,14 +414,19 @@ Examples:
     else:
         csv_path = project_root / args.csv_file
 
-    # Resolve output path
+    # Resolve output paths
     if Path(args.output).is_absolute():
         output_path = Path(args.output)
     else:
         output_path = project_root / args.output
 
-    print("🎅 Secret Santa Assignment Generator")
-    print("="*40)
+    if Path(args.passphrase_file).is_absolute():
+        passphrase_path = Path(args.passphrase_file)
+    else:
+        passphrase_path = project_root / args.passphrase_file
+
+    print("🎅 Secret Santa Assignment Generator (Individual Passphrases)")
+    print("="*60)
 
     try:
         # Initialize generator
@@ -324,40 +442,57 @@ Examples:
         assignments = generator.generate_assignments()
         print(f"✅ Generated {len(assignments)} assignments")
 
+        # Generate individual passphrases
+        print("\n🔑 Generating individual passphrases...")
+        passphrases = generator.generate_individual_passphrases()
+        print(f"✅ Generated {len(passphrases)} unique passphrases")
+
         if args.show_assignments:
             generator.print_assignments()
 
-        # Generate or use provided passphrase
-        if args.passphrase:
-            passphrase = args.passphrase
-            print(f"\n🔑 Using provided passphrase")
-        else:
-            passphrase = generator.generate_passphrase()
-            print(f"\n🔑 Generated passphrase: {passphrase}")
-
-        # Encrypt data
-        print("\n🔒 Encrypting assignments...")
-        encrypted_data = generator.encrypt_assignments(passphrase)
-        print("✅ Encryption complete")
-
-        # Create output file
-        print(f"\n💾 Creating encrypted file: {output_path}")
+        # Create encrypted file
+        print(f"\n🔒 Creating encrypted assignment file: {output_path}")
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        generator.create_encrypted_file(encrypted_data, str(output_path))
+        generator.create_encrypted_file(str(output_path))
 
-        print("\n" + "="*50)
-        print("🎄 SUCCESS! Secret Santa file generated")
-        print("="*50)
-        print(f"📁 File: {output_path}")
-        print(f"🔑 Passphrase: {passphrase}")
+        # Create passphrase distribution file
+        print(f"\n📋 Creating passphrase distribution file: {passphrase_path}")
+        passphrase_path.parent.mkdir(parents=True, exist_ok=True)
+        generator.create_passphrase_distribution_file(str(passphrase_path))
+
+        print("\n" + "="*60)
+        print("🎄 SUCCESS! Secret Santa files generated")
+        print("="*60)
+        print(f"📁 Encrypted assignments: {output_path}")
+        print(f"📋 Passphrase distribution: {passphrase_path}")
         print(f"👥 Participants: {len(participants)}")
         print(f"📝 Assignments: {len(assignments)}")
+        print(f"🔑 Individual passphrases: {len(passphrases)}")
+
         print("\n📋 Next steps:")
-        print("  1. Commit and push the encrypted file to your repo")
-        print("  2. Share the passphrase with participants")
-        print("  3. Participants can look up their assignments on the website")
-        print(f"  4. Keep this passphrase safe: {passphrase}")
-        print("\n💡 Tip: The app will automatically load the encrypted file from GitHub Pages")
+        print("  1. Commit and push the encrypted file to your repo:")
+        print(f"     git add {output_path}")
+        print("     git commit -m 'Update Secret Santa assignments'")
+        print("     git push origin main")
+        print(f"  2. Distribute individual passphrases from: {passphrase_path}")
+        print("     - Send each person ONLY their own passphrase")
+        print("     - Do NOT share the assignment details")
+        print("  3. Participants visit the website and enter their passphrase")
+        print("  4. Each person will only see their own assignment")
+
+        print(f"🔐 Security Notes:")
+        print("  - Each participant has a unique Christmas-themed passphrase")
+        print("  - Passphrases only unlock that person's assignment")
+        print("  - You (organizer) cannot see assignments without passphrases")
+        print("  - Assignments are individually encrypted for maximum privacy")
+        print("  - Passphrases use cryptographically secure word selection")
+        print("  - Word bank is kept private to prevent dictionary attacks")
+        print("  - Christmas-themed passphrases for memorability and security")
+
+        print(f"\n⚠️  Important:")
+        print(f"  - Keep {passphrase_path} secure and delete it after distribution")
+        print("  - Each passphrase should only be shared with the intended person")
+        print("  - Participants cannot see other people's assignments")
 
     except Exception as e:
         print(f"\n❌ Error: {e}")

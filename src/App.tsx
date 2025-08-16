@@ -1,33 +1,44 @@
 import { useState, useEffect } from "react";
-import { decryptData } from "./utils/encryption";
-import { parseEncryptedFormat, SecretSantaAssignment } from "./utils/csvParser";
-import { loadExistingSecretSantaData } from "./utils/fileUtils";
+import {
+  decryptLegacyData,
+  findAndDecryptAssignment,
+} from "./utils/encryption";
+import {
+  parseEncryptedFormat,
+  parseIndividualAssignment,
+  SecretSantaAssignment,
+} from "./utils/csvParser";
+import {
+  loadExistingSecretSantaData,
+  EncryptedFileData,
+  EncryptedFileDataV2,
+} from "./utils/fileUtils";
 import "./App.css";
 
 interface AppState {
-  assignments: SecretSantaAssignment[];
-  passphrase: string;
+  assignment: SecretSantaAssignment | null;
   isDataLoaded: boolean;
   loading: boolean;
   error: string;
   success: string;
+  dataVersion: string;
 }
 
 function App() {
   const [state, setState] = useState<AppState>({
-    assignments: [],
-    passphrase: "",
+    assignment: null,
     isDataLoaded: false,
     loading: false,
     error: "",
     success: "",
+    dataVersion: "unknown",
   });
 
-  const [lookupName, setLookupName] = useState("");
-  const [currentAssignment, setCurrentAssignment] =
-    useState<SecretSantaAssignment | null>(null);
   const [passphraseInput, setPassphraseInput] = useState("");
   const [needsPassphrase, setNeedsPassphrase] = useState(false);
+  const [encryptedData, setEncryptedData] = useState<
+    EncryptedFileData | EncryptedFileDataV2 | null
+  >(null);
 
   // Try to load existing data on component mount
   useEffect(() => {
@@ -44,16 +55,22 @@ function App() {
 
     try {
       // Load encrypted data from public directory (GitHub Pages)
-      const encryptedData = await loadExistingSecretSantaData();
+      const data = await loadExistingSecretSantaData();
 
-      if (encryptedData) {
-        // We have data but need the passphrase to decrypt it
+      if (data) {
+        setEncryptedData(data);
         setNeedsPassphrase(true);
+
+        const version = data.version || "1.0";
+        const isV2 = version === "2.0";
+
         setState((prev) => ({
           ...prev,
           loading: false,
-          success:
-            "Secret Santa data found! Please enter the passphrase to access assignments.",
+          dataVersion: version,
+          success: isV2
+            ? "Secret Santa data found! Enter your personal passphrase to see your assignment."
+            : "Secret Santa data found! Please enter the shared passphrase to access assignments.",
         }));
       } else {
         setState((prev) => ({
@@ -83,6 +100,14 @@ function App() {
       return;
     }
 
+    if (!encryptedData) {
+      setState((prev) => ({
+        ...prev,
+        error: "No encrypted data available",
+      }));
+      return;
+    }
+
     setState((prev) => ({
       ...prev,
       loading: true,
@@ -90,24 +115,60 @@ function App() {
     }));
 
     try {
-      const encryptedData = await loadExistingSecretSantaData();
-      if (!encryptedData) {
-        throw new Error("No encrypted data found");
+      const version = encryptedData.version || "1.0";
+
+      if (version === "2.0") {
+        // Handle v2.0 format (individual passphrases)
+        const v2Data = encryptedData as EncryptedFileDataV2;
+        const decryptedAssignmentData = await findAndDecryptAssignment(
+          v2Data.assignments,
+          passphraseInput,
+        );
+
+        if (!decryptedAssignmentData) {
+          setState((prev) => ({
+            ...prev,
+            loading: false,
+            error:
+              "No assignment found for this passphrase. Please check your passphrase or contact your organizer.",
+          }));
+          return;
+        }
+
+        const assignment = parseIndividualAssignment(decryptedAssignmentData);
+
+        setState((prev) => ({
+          ...prev,
+          assignment,
+          isDataLoaded: true,
+          loading: false,
+          success: `Welcome ${assignment.giver}! Here's your Secret Santa assignment.`,
+        }));
+
+        setNeedsPassphrase(false);
+      } else {
+        // Handle v1.0 format (legacy shared passphrase)
+        const v1Data = encryptedData as EncryptedFileData;
+        const decryptedData = await decryptLegacyData(
+          v1Data.data,
+          passphraseInput,
+        );
+        const assignments = parseEncryptedFormat(decryptedData);
+
+        // For legacy mode, we still need to ask for a name
+        setState((prev) => ({
+          ...prev,
+          // Store assignments temporarily for legacy lookup
+          loading: false,
+          success:
+            "Secret Santa data loaded successfully! Now enter your name to find your assignment.",
+          dataVersion: "1.0-legacy",
+        }));
+
+        // Store assignments in a way we can access them for legacy lookup
+        (window as any).legacyAssignments = assignments;
+        setNeedsPassphrase(false);
       }
-
-      const decryptedData = await decryptData(encryptedData, passphraseInput);
-      const assignments = parseEncryptedFormat(decryptedData);
-
-      setState((prev) => ({
-        ...prev,
-        assignments,
-        passphrase: passphraseInput,
-        isDataLoaded: true,
-        loading: false,
-        success: "Secret Santa data loaded successfully!",
-      }));
-
-      setNeedsPassphrase(false);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
@@ -119,7 +180,7 @@ function App() {
     }
   };
 
-  const handleLookup = () => {
+  const handleLegacyLookup = (lookupName: string) => {
     const trimmedName = lookupName.trim();
     if (!trimmedName) {
       setState((prev) => ({
@@ -129,20 +190,30 @@ function App() {
       return;
     }
 
+    const assignments = (window as any)
+      .legacyAssignments as SecretSantaAssignment[];
+    if (!assignments) {
+      setState((prev) => ({
+        ...prev,
+        error: "No assignment data available",
+      }));
+      return;
+    }
+
     // Find assignment for this person
-    const assignment = state.assignments.find(
+    const assignment = assignments.find(
       (a) => a.giver.toLowerCase() === trimmedName.toLowerCase(),
     );
 
     if (assignment) {
-      setCurrentAssignment(assignment);
       setState((prev) => ({
         ...prev,
+        assignment,
+        isDataLoaded: true,
         error: "",
         success: `Found assignment for ${assignment.giver}!`,
       }));
     } else {
-      setCurrentAssignment(null);
       setState((prev) => ({
         ...prev,
         error: `No assignment found for "${trimmedName}". Please check the spelling or contact your organizer.`,
@@ -152,14 +223,14 @@ function App() {
   };
 
   const handlePrint = () => {
-    if (currentAssignment) {
+    if (state.assignment) {
       const printWindow = window.open("", "_blank");
       if (printWindow) {
         printWindow.document.write(`
           <!DOCTYPE html>
           <html>
             <head>
-              <title>Secret Santa Assignment - ${currentAssignment.giver}</title>
+              <title>Secret Santa Assignment - ${state.assignment.giver}</title>
               <style>
                 body {
                   font-family: Arial, sans-serif;
@@ -201,11 +272,11 @@ function App() {
             <body>
               <div class="card">
                 <div class="title">🎅 Secret Santa Assignment</div>
-                <div><strong>For:</strong> ${currentAssignment.giver}</div>
-                <div class="recipient">🎁 ${currentAssignment.recipient}</div>
+                <div><strong>For:</strong> ${state.assignment.giver}</div>
+                <div class="recipient">🎁 ${state.assignment.recipient}</div>
                 <div class="bio">
                   <strong>About them:</strong><br>
-                  ${currentAssignment.recipientBio || "No additional information provided"}
+                  ${state.assignment.recipientBio || "No additional information provided"}
                 </div>
               </div>
             </body>
@@ -217,21 +288,62 @@ function App() {
     }
   };
 
-  const resetLookup = () => {
-    setLookupName("");
-    setCurrentAssignment(null);
-    setState((prev) => ({
-      ...prev,
+  const resetApp = () => {
+    setState({
+      assignment: null,
+      isDataLoaded: false,
+      loading: false,
       error: "",
       success: "",
-    }));
+      dataVersion: "unknown",
+    });
+    setPassphraseInput("");
+    setNeedsPassphrase(false);
+    setEncryptedData(null);
+    // Clear legacy data
+    delete (window as any).legacyAssignments;
+  };
+
+  const LegacyNameLookup = () => {
+    const [lookupName, setLookupName] = useState("");
+
+    return (
+      <div className="card">
+        <h2>👤 Enter your name</h2>
+        <p>
+          Enter your name exactly as it appears in the participant list to find
+          your Secret Santa assignment.
+        </p>
+        <div className="input-group">
+          <input
+            type="text"
+            value={lookupName}
+            onChange={(e) => setLookupName(e.target.value)}
+            placeholder="Enter your full name"
+            onKeyPress={(e) =>
+              e.key === "Enter" && handleLegacyLookup(lookupName)
+            }
+          />
+          <button
+            onClick={() => handleLegacyLookup(lookupName)}
+            disabled={!lookupName.trim()}
+          >
+            🎁 Find My Assignment
+          </button>
+        </div>
+      </div>
+    );
   };
 
   return (
     <div className="app">
       <header className="header">
         <h1>🎄 Secret Santa Lookup</h1>
-        <p>Find your Secret Santa assignment</p>
+        <p>
+          {state.dataVersion === "2.0"
+            ? "Enter your personal passphrase to see your assignment"
+            : "Find your Secret Santa assignment"}
+        </p>
       </header>
 
       <main className="main">
@@ -258,20 +370,25 @@ function App() {
           </div>
         )}
 
-        {/* Passphrase Input */}
+        {/* Password Input */}
         {needsPassphrase && !state.isDataLoaded && (
           <div className="card">
             <h2>🔐 Enter Passphrase</h2>
             <p>
-              Your organizer should have provided you with a passphrase to
-              access the Secret Santa assignments.
+              {state.dataVersion === "2.0"
+                ? "Your organizer should have provided you with a personal passphrase that only unlocks your assignment."
+                : "Your organizer should have provided you with a passphrase to access the Secret Santa assignments."}
             </p>
             <div className="input-group">
               <input
                 type="text"
                 value={passphraseInput}
                 onChange={(e) => setPassphraseInput(e.target.value)}
-                placeholder="Enter passphrase (e.g., snowflake-mistletoe-gift-123)"
+                placeholder={
+                  state.dataVersion === "2.0"
+                    ? "Enter your personal passphrase"
+                    : "Enter shared passphrase"
+                }
                 onKeyPress={(e) =>
                   e.key === "Enter" && handlePassphraseSubmit()
                 }
@@ -281,54 +398,36 @@ function App() {
                 onClick={handlePassphraseSubmit}
                 disabled={state.loading || !passphraseInput.trim()}
               >
-                🔓 Unlock Assignments
+                🔓{" "}
+                {state.dataVersion === "2.0"
+                  ? "View My Assignment"
+                  : "Unlock Assignments"}
               </button>
             </div>
           </div>
         )}
 
-        {/* Participant Lookup */}
-        {state.isDataLoaded && !currentAssignment && (
-          <div className="card">
-            <h2>👤 Look up your assignment</h2>
-            <p>
-              Enter your name exactly as it appears in the participant list to
-              find your Secret Santa assignment.
-            </p>
-            <div className="input-group">
-              <input
-                type="text"
-                value={lookupName}
-                onChange={(e) => setLookupName(e.target.value)}
-                placeholder="Enter your full name"
-                onKeyPress={(e) => e.key === "Enter" && handleLookup()}
-              />
-              <button onClick={handleLookup} disabled={!lookupName.trim()}>
-                🎁 Find My Assignment
-              </button>
-            </div>
-            <div className="participant-count">
-              {state.assignments.length} participants in this Secret Santa
-            </div>
-          </div>
+        {/* Legacy Name Lookup (v1.0 format) */}
+        {state.dataVersion === "1.0-legacy" && !state.assignment && (
+          <LegacyNameLookup />
         )}
 
         {/* Assignment Display */}
-        {currentAssignment && (
+        {state.assignment && (
           <div className="card assignment-card">
             <h2>🎅 Your Secret Santa Assignment</h2>
             <div className="assignment-details">
               <div className="assignment-giver">
-                <strong>Your name:</strong> {currentAssignment.giver}
+                <strong>Your name:</strong> {state.assignment.giver}
               </div>
               <div className="assignment-recipient">
                 <strong>🎁 You're giving to:</strong>{" "}
-                {currentAssignment.recipient}
+                {state.assignment.recipient}
               </div>
-              {currentAssignment.recipientBio && (
+              {state.assignment.recipientBio && (
                 <div className="assignment-bio">
                   <strong>About them:</strong>
-                  <p>{currentAssignment.recipientBio}</p>
+                  <p>{state.assignment.recipientBio}</p>
                 </div>
               )}
             </div>
@@ -336,9 +435,16 @@ function App() {
               <button onClick={handlePrint} className="print-button">
                 🖨️ Print Reference Card
               </button>
-              <button onClick={resetLookup} className="secondary-button">
-                👥 Look up another person
-              </button>
+              {state.dataVersion !== "2.0" && (
+                <button onClick={resetApp} className="secondary-button">
+                  👥 Look up another person
+                </button>
+              )}
+              {state.dataVersion === "2.0" && (
+                <button onClick={resetApp} className="secondary-button">
+                  🔄 Enter Different Passphrase
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -361,19 +467,35 @@ function App() {
                   script
                 </li>
                 <li>Deploy the updated data to this website</li>
-                <li>Share the passphrase with all participants</li>
+                <li>Share your personal passphrase with you</li>
               </ol>
               <p>
-                Once that's done, you'll be able to enter the passphrase and
-                look up your assignment!
+                Once that's done, you'll be able to enter your passphrase and
+                see your assignment! Each person gets their own unique
+                passphrase that only shows their assignment.
               </p>
             </div>
+          </div>
+        )}
+
+        {/* Privacy Notice for v2.0 */}
+        {state.dataVersion === "2.0" && state.assignment && (
+          <div className="card">
+            <h3>🔒 Privacy Notice</h3>
+            <p>
+              Your passphrase only unlocks your assignment. Other participants
+              cannot see your assignment, and you cannot see theirs. This
+              ensures maximum privacy for everyone!
+            </p>
           </div>
         )}
       </main>
 
       <footer className="footer">
         <p>🎁 Keep your assignment secret until gift exchange day! 🤫</p>
+        {state.dataVersion === "2.0" && (
+          <p>🔐 Your passphrase is personal - don't share it with others!</p>
+        )}
       </footer>
     </div>
   );

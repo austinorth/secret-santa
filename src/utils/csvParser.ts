@@ -1,5 +1,6 @@
 // CSV parsing utilities for Secret Santa participant data
 // Handles parsing of CSV files with NAME, BIO, SO columns
+// Also handles individual assignment format (v2.0)
 
 export interface Participant {
   name: string;
@@ -211,7 +212,7 @@ export function assignmentsToEncryptedFormat(
   return JSON.stringify(assignments, null, 2);
 }
 
-// Parse encrypted data back to assignments
+// Parse encrypted data back to assignments (legacy v1.0 format)
 export function parseEncryptedFormat(data: string): SecretSantaAssignment[] {
   try {
     const assignments = JSON.parse(data);
@@ -235,6 +236,29 @@ export function parseEncryptedFormat(data: string): SecretSantaAssignment[] {
   } catch (error) {
     throw new Error(
       "Failed to parse Secret Santa data: " +
+        (error instanceof Error ? error.message : String(error)),
+    );
+  }
+}
+
+// Parse individual assignment data (v2.0 format)
+export function parseIndividualAssignment(data: string): SecretSantaAssignment {
+  try {
+    const assignment = JSON.parse(data);
+
+    // Validate the structure
+    if (
+      !assignment.giver ||
+      !assignment.recipient ||
+      assignment.recipientBio === undefined
+    ) {
+      throw new Error("Invalid assignment format: missing required fields");
+    }
+
+    return assignment as SecretSantaAssignment;
+  } catch (error) {
+    throw new Error(
+      "Failed to parse individual assignment: " +
         (error instanceof Error ? error.message : String(error)),
     );
   }
