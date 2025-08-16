@@ -1,474 +1,387 @@
-/* App-specific styles for Secret Santa */
+/* Secret Santa App Styles */
+/* Clean, Christmas-themed design for participant lookup only */
 
-.App {
-    text-align: center;
-}
-
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
-}
-
-.App-header {
-    background-color: #282c34;
-    padding: 20px;
-    color: white;
-}
-
-.App-link {
-    color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* Additional Secret Santa specific styles */
-.name-input-container {
+.app {
+    min-height: 100vh;
     display: flex;
-    gap: 1rem;
-    align-items: flex-end;
-    flex-wrap: wrap;
-}
-
-.name-input-container .form-control {
-    flex: 1;
-    min-width: 200px;
-}
-
-.assignment-card {
+    flex-direction: column;
     background: linear-gradient(
         135deg,
-        var(--snow-white) 0%,
-        var(--warm-cream) 100%
+        var(--warm-cream) 0%,
+        var(--snow-white) 100%
     );
-    border: 2px solid var(--holly-green);
-    border-radius: 16px;
-    padding: 2rem;
-    margin: 2rem 0;
-    box-shadow: 0 8px 32px rgba(15, 81, 50, 0.15);
-    position: relative;
-    overflow: hidden;
 }
 
-.assignment-card::before {
-    content: "🎁";
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 2rem;
-    opacity: 0.3;
-}
-
-.recipient-name-large {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--cranberry-red);
+.header {
     text-align: center;
-    margin: 1rem 0;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.bio-content {
-    background: var(--snow-white);
-    padding: 1.5rem;
-    border-radius: 12px;
-    border-left: 4px solid var(--gold);
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--text-dark);
-    white-space: pre-wrap;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.admin-toggle {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    z-index: 1000;
-}
-
-.file-input-wrapper {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-}
-
-.file-input-wrapper input[type="file"] {
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-}
-
-.file-input-display {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem 2rem;
-    border: 2px dashed var(--silver);
-    border-radius: 12px;
-    background: var(--warm-cream);
-    transition: all 0.3s ease;
-    cursor: pointer;
-    text-align: center;
-}
-
-.file-input-display:hover {
-    border-color: var(--holly-green);
-    background: var(--snow-white);
-}
-
-.file-input-display.dragover {
-    border-color: var(--cranberry-red);
-    background: rgba(220, 53, 69, 0.05);
-    transform: scale(1.02);
-}
-
-.upload-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    opacity: 0.6;
-}
-
-.data-status {
-    background: linear-gradient(135deg, var(--holly-green), var(--pine-green));
-    color: var(--snow-white);
-    padding: 1rem;
-    border-radius: 8px;
-    margin: 1rem 0;
-}
-
-.data-status code {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    font-family: "Monaco", "Consolas", monospace;
-}
-
-.passphrase-display {
-    background: var(--warm-cream);
-    border: 1px solid var(--silver);
-    padding: 1rem;
-    border-radius: 8px;
-    font-family: "Monaco", "Consolas", monospace;
-    font-size: 0.9rem;
-    word-break: break-all;
-    margin: 1rem 0;
-}
-
-.loading-spinner {
-    display: inline-block;
-    width: 2rem;
-    height: 2rem;
-    border: 3px solid var(--silver);
-    border-radius: 50%;
-    border-top-color: var(--holly-green);
-    animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.participant-count {
-    display: inline-flex;
-    align-items: center;
+    padding: 2rem 1rem;
     background: var(--holly-green);
     color: var(--snow-white);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin: 0.5rem 0;
-}
-
-.participant-count::before {
-    content: "👥";
-    margin-right: 0.5rem;
-}
-
-.holiday-decoration {
-    position: absolute;
-    font-size: 1.5rem;
-    opacity: 0.1;
-    pointer-events: none;
-    animation: float 6s ease-in-out infinite;
-}
-
-.holiday-decoration:nth-child(odd) {
-    animation-delay: -3s;
-}
-
-@keyframes float {
-    0%,
-    100% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-.print-preview {
-    background: var(--snow-white);
-    border: 1px solid var(--silver);
-    border-radius: 8px;
-    padding: 2rem;
-    margin: 1rem 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Enhanced print styles */
-@media print {
-    .admin-section,
-    .admin-toggle,
-    .btn:not(.print-btn),
-    .alert,
-    .file-upload-area,
-    .header .subtitle {
-        display: none !important;
-    }
-
-    .assignment-card {
-        border: 3px solid var(--holly-green) !important;
-        box-shadow: none !important;
-        margin: 0 !important;
-        page-break-inside: avoid;
-    }
-
-    .assignment-card::before {
-        opacity: 0.8 !important;
-        font-size: 3rem !important;
-    }
-
-    .recipient-name-large {
-        font-size: 3rem !important;
-        color: var(--cranberry-red) !important;
-    }
-
-    .bio-content {
-        border-left: 6px solid var(--gold) !important;
-        font-size: 1.2rem !important;
-    }
-
-    .header h1 {
-        font-size: 3rem !important;
-        margin-bottom: 2rem !important;
-    }
+.header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Responsive enhancements */
-@media (max-width: 768px) {
-    .name-input-container {
-        flex-direction: column;
-    }
-
-    .name-input-container .form-control {
-        min-width: auto;
-    }
-
-    .admin-toggle {
-        position: static;
-        margin: 2rem auto;
-    }
-
-    .recipient-name-large {
-        font-size: 1.5rem;
-    }
-
-    .assignment-card {
-        padding: 1.5rem;
-    }
-
-    .bio-content {
-        font-size: 1rem;
-        padding: 1rem;
-    }
+.header p {
+    margin: 0;
+    font-size: 1.2rem;
+    opacity: 0.9;
+    font-weight: 300;
 }
 
-/* Admin panel specific styles */
-.admin-step {
-    border: 1px solid var(--silver);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
+.main {
+    flex: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.card {
     background: var(--snow-white);
-    transition: all 0.3s ease;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    border: 1px solid rgba(15, 81, 50, 0.1);
 }
 
-.admin-step.active {
+.card h2 {
+    color: var(--holly-green);
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.card p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+/* Loading state */
+.loading {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.1rem;
+    color: var(--holly-green);
+}
+
+/* Messages */
+.error-message,
+.success-message {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.error-message {
+    background: rgba(220, 53, 69, 0.1);
+    color: var(--cranberry-red);
+    border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+.success-message {
+    background: rgba(15, 81, 50, 0.1);
+    color: var(--holly-green);
+    border: 1px solid rgba(15, 81, 50, 0.2);
+}
+
+/* Input groups */
+.input-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
     border-color: var(--holly-green);
     box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.1);
 }
 
-.admin-step h3 {
-    margin: 0 0 0.5rem 0;
-    color: var(--holly-green);
-    font-size: 1.2rem;
+.input-group input::placeholder {
+    color: #6c757d;
 }
 
-.admin-step .description {
-    color: var(--soft-gray);
-    margin-bottom: 1rem;
-    font-size: 0.95rem;
-    line-height: 1.5;
+.input-group input:disabled {
+    background-color: #f8f9fa;
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
-.status-indicator {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-top: 1rem;
+.input-group button {
+    padding: 0.75rem 1.25rem;
+    background: var(--holly-green);
+    color: var(--snow-white);
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background-color 0.3s ease,
+        transform 0.1s ease;
+    white-space: nowrap;
 }
 
-.status-indicator.success {
-    background: rgba(15, 81, 50, 0.1);
-    color: var(--holly-green);
-    border: 1px solid var(--holly-green);
+.input-group button:hover:not(:disabled) {
+    background: #0a3d26;
+    transform: translateY(-1px);
 }
 
-.status-indicator.error {
-    background: rgba(220, 53, 69, 0.1);
-    color: var(--cranberry-red);
-    border: 1px solid var(--cranberry-red);
+.input-group button:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
 }
 
-.status-indicator.processing {
-    background: rgba(255, 193, 7, 0.1);
-    color: var(--text-dark);
-    border: 1px solid var(--gold);
-}
-
-.file-upload-enhanced {
-    border: 2px dashed var(--silver);
-    border-radius: 12px;
-    padding: 2rem;
+/* Participant count */
+.participant-count {
     text-align: center;
-    background: var(--warm-cream);
-    transition: all 0.3s ease;
-    position: relative;
-    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
 }
 
-.file-upload-enhanced:hover {
-    border-color: var(--holly-green);
-    background: var(--snow-white);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+/* Assignment display */
+.assignment-card {
+    border: 2px solid var(--holly-green);
+    background: linear-gradient(135deg, var(--snow-white) 0%, #f8f9fa 100%);
 }
 
-.file-upload-enhanced.dragover {
-    border-color: var(--cranberry-red);
+.assignment-details {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.assignment-giver {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+.assignment-recipient {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--cranberry-red);
+    margin-bottom: 1.5rem;
+    padding: 1rem;
     background: rgba(220, 53, 69, 0.05);
-    transform: scale(1.02);
+    border-radius: 8px;
+    border: 1px solid rgba(220, 53, 69, 0.1);
 }
 
-.file-upload-enhanced input[type="file"] {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
+.assignment-bio {
+    text-align: left;
+    background: rgba(15, 81, 50, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(15, 81, 50, 0.1);
 }
 
-.download-section {
-    background: linear-gradient(
-        135deg,
-        rgba(255, 193, 7, 0.05),
-        rgba(255, 193, 7, 0.15)
-    );
-    border: 2px solid var(--gold);
-    border-radius: 16px;
-    padding: 2rem;
+.assignment-bio strong {
+    color: var(--holly-green);
+}
+
+.assignment-bio p {
+    margin: 0.5rem 0 0 0;
+    line-height: 1.5;
+    color: var(--text-primary);
+}
+
+.assignment-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
     margin-top: 2rem;
 }
 
-.passphrase-box {
-    background: var(--snow-white);
+.print-button,
+.secondary-button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.print-button {
+    background: var(--gold);
+    color: #000;
+}
+
+.print-button:hover {
+    background: #e0a800;
+    transform: translateY(-1px);
+}
+
+.secondary-button {
+    background: transparent;
+    color: var(--holly-green);
     border: 2px solid var(--holly-green);
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 1rem 0;
-    font-family: "Monaco", "Consolas", monospace;
-    font-size: 1.1rem;
-    word-break: break-all;
+}
+
+.secondary-button:hover {
+    background: var(--holly-green);
+    color: var(--snow-white);
+}
+
+/* Instructions */
+.instructions {
+    text-align: left;
+}
+
+.instructions ol {
+    padding-left: 1.5rem;
+}
+
+.instructions li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+/* Footer */
+.footer {
     text-align: center;
-    position: relative;
+    padding: 2rem 1rem;
+    background: var(--holly-green);
+    color: var(--snow-white);
+    margin-top: auto;
 }
 
-.passphrase-box::before {
-    content: "🔑";
-    position: absolute;
-    top: -12px;
-    left: 1rem;
-    background: var(--snow-white);
-    padding: 0 0.5rem;
-    font-size: 1.2rem;
+.footer p {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
 }
 
+/* Responsive design */
 @media (max-width: 768px) {
-    .admin-step {
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .header p {
+        font-size: 1rem;
+    }
+
+    .main {
         padding: 1rem;
     }
 
-    .download-section {
+    .card {
         padding: 1.5rem;
     }
 
-    .passphrase-box {
-        font-size: 1rem;
-        padding: 0.8rem;
+    .input-group {
+        flex-direction: column;
+    }
+
+    .assignment-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .assignment-actions button {
+        width: 100%;
+        max-width: 250px;
     }
 }
 
 @media (max-width: 480px) {
-    .container {
-        padding: 1rem 0.5rem;
+    .header {
+        padding: 1.5rem 1rem;
+    }
+
+    .header h1 {
+        font-size: 1.75rem;
     }
 
     .card {
         padding: 1rem;
     }
 
-    .header h1 {
-        font-size: 2rem;
+    .assignment-recipient {
+        font-size: 1.2rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .app {
+        background: white;
     }
 
-    .file-input-display {
-        padding: 2rem 1rem;
+    .header,
+    .footer {
+        background: white !important;
+        color: black !important;
+        box-shadow: none;
     }
 
-    .upload-icon {
-        font-size: 2rem;
+    .card {
+        box-shadow: none;
+        border: 2px solid #000;
     }
 
-    .admin-step {
-        padding: 0.8rem;
+    .assignment-actions {
+        display: none;
     }
 
-    .download-section {
-        padding: 1rem;
+    .input-group,
+    .participant-count {
+        display: none;
+    }
+}
+
+/* Focus accessibility */
+button:focus,
+input:focus {
+    outline: 2px solid var(--holly-green);
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .card {
+        border: 2px solid var(--holly-green);
+    }
+
+    .input-group input {
+        border-width: 2px;
+    }
+
+    .assignment-recipient,
+    .assignment-bio {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
     }
 }

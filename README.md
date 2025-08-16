@@ -8,58 +8,77 @@ A secure, stateless Secret Santa gift exchange application designed to run on Gi
 - **🌐 GitHub Pages Compatible**: Fully static app that works with GitHub Pages hosting
 - **📱 Responsive Design**: Beautiful Christmas-themed UI that works on all devices
 - **🖨️ Print-Friendly**: Clean print layout for physical reference cards
-- **⚙️ Easy Admin Panel**: Simple CSV upload to generate assignments
+- **⚙️ Script-Based Setup**: Simple Node.js script to generate assignments
 - **🚫 Smart Constraints**: Prevents self-assignment and significant other matches
 
 ## 🎯 How It Works
 
 This app solves the challenge of hosting a stateful Secret Santa application on static hosting (GitHub Pages) by using client-side encryption:
 
-1. **CSV Upload**: Admin uploads a CSV with participant data (NAME, BIO, SO)
-2. **Assignment Generation**: App creates Secret Santa assignments avoiding conflicts
-3. **Encryption**: Assignments are encrypted and downloaded as a file
-4. **Deployment**: Encrypted file is added to the repo and deployed with the app
-5. **Lookup**: Participants enter their name to see their assignment
+1. **CSV Preparation**: Create a CSV file with participant data (NAME, BIO, SO)
+2. **Script Generation**: Run the Node.js script to create encrypted assignments
+3. **Deployment**: Encrypted file is automatically saved and deployed with the app
+4. **Lookup**: Participants enter the passphrase and their name to see assignments
 
 ## 🚀 Quick Start
 
 ### For Participants
 
 1. Visit the deployed app
-2. Enter your name in the lookup field
-3. Press Enter or click "Find My Assignment"
+2. Enter the passphrase provided by your organizer
+3. Enter your name in the lookup field
 4. View your Secret Santa recipient and their gift preferences
 5. Use the print button for a physical reference card
 
 ### For Organizers
 
 1. **Prepare Your Data**: Create a CSV file with columns: `NAME`, `BIO`, `SO`
-   - `NAME`: Full name of participant
-   - `BIO`: Hobbies, interests, and gift suggestions
-   - `SO`: Significant other's name (leave empty if none)
+   ```csv
+   NAME,BIO,SO
+   John Doe,"Loves coffee and hiking. Gift ideas: coffee beans, books",Jane Doe
+   Jane Doe,"Enjoys cooking and yoga. Gift ideas: tea sets, plants",John Doe
+   Alice Smith,"Photography enthusiast. Gift ideas: camera accessories",
+   ```
 
 2. **Generate Assignments**:
-   - Open the admin panel
-   - Upload your CSV file
-   - App will generate assignments and download an encrypted file
-   - Save the passphrase that's displayed
+   ```bash
+   # Install dependencies (first time only)
+   npm install
+   
+   # Set up Python environment and generate encrypted data
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install cryptography
+   python scripts/generate_assignments.py your-participants.csv
+   ```
 
 3. **Deploy**:
-   - Replace `public/secret-santa-data.enc` with your downloaded file
-   - Commit and push to GitHub
-   - GitHub Actions will automatically deploy
+   ```bash
+   # Commit the generated encrypted file
+   git add public/secret-santa-data.enc
+   git commit -m "Add Secret Santa assignments"
+   git push
+   ```
+
+4. **Share**: Give participants the passphrase (saved in `passphrase.txt`)
 
 ## 📋 CSV Format
 
-Download the template from the admin panel or use this format:
+Your CSV file should follow this format:
 
 ```csv
 NAME,BIO,SO
-John Doe,"Loves coffee, hiking, and board games. Good books: fantasy novels. Gift ideas: coffee beans, hiking gear, board games",Jane Doe
-Jane Doe,"Enjoys cooking, yoga, and gardening. Loves tea and handmade items. Gift ideas: cooking utensils, tea sets, plants",John Doe
-Alice Smith,"Photography enthusiast, loves travel and art. Gift ideas: camera accessories, art supplies, travel guides",
-Bob Johnson,"Tech lover, enjoys video games and programming. Gift ideas: gadgets, games, tech books",
+John Doe,"Loves coffee, hiking, and board games. Gift ideas: coffee beans, hiking gear",Jane Doe
+Jane Doe,"Enjoys cooking, yoga, and gardening. Gift ideas: cooking utensils, tea sets",John Doe
+Alice Smith,"Photography enthusiast, loves travel. Gift ideas: camera accessories, art supplies",
+Bob Johnson,"Tech lover, enjoys games and programming. Gift ideas: gadgets, games, books",
+Charlie Wilson,"Musician and reader. Gift ideas: music gear, books, vinyl records",
 ```
+
+**Column Details:**
+- **NAME** (required): Full name of participant
+- **BIO** (optional): Hobbies, interests, and gift suggestions  
+- **SO** (optional): Significant other's name to prevent pairing
 
 **Important Notes:**
 - Use quotes around BIO entries that contain commas
@@ -69,8 +88,8 @@ Bob Johnson,"Tech lover, enjoys video games and programming. Gift ideas: gadgets
 ## 🛠️ Development Setup
 
 ### Prerequisites
-- Node.js 18 or higher
-- npm or yarn
+- Node.js 14 or higher
+- npm
 
 ### Installation
 
@@ -86,14 +105,58 @@ npm install
 npm run dev
 ```
 
-### Building for Production
+### Available Scripts
 
 ```bash
-# Build for production
-npm run build
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+python scripts/generate_assignments.py  # Generate encrypted Secret Santa data
+```
 
-# Preview production build
-npm run preview
+## 🔧 Generating Secret Santa Data
+
+### Basic Usage
+
+```bash
+# Generate from your CSV file
+python scripts/generate_assignments.py my-participants.csv
+
+# Or use the example file for testing
+python scripts/generate_assignments.py example-participants.csv
+```
+
+### What Happens
+
+1. **Reads your CSV** and validates the format
+2. **Generates assignments** avoiding conflicts (self/SO pairings)
+3. **Creates a passphrase** using Christmas-themed words
+4. **Encrypts the data** using strong AES-GCM encryption
+5. **Saves files**:
+   - `public/secret-santa-data.enc` (commit this)
+   - `passphrase.txt` (share this, don't commit)
+
+### Example Output
+
+```
+🎄 Generating Secret Santa assignments...
+📁 Read CSV file: my-participants.csv
+👥 Parsed 5 participants
+🎁 Generated 5 assignments
+🔑 Generated passphrase: snowflake-mistletoe-gift-789
+💾 Saved encrypted data to: public/secret-santa-data.enc
+🔐 Saved passphrase to: passphrase.txt
+
+✅ Secret Santa data generated successfully!
+
+🎅 Passphrase: snowflake-mistletoe-gift-789
+
+📊 Summary:
+   John Doe → Alice Smith
+   Alice Smith → Bob Johnson
+   Bob Johnson → Charlie Wilson
+   Charlie Wilson → Jane Doe
+   Jane Doe → John Doe
 ```
 
 ## 🚀 Deployment
@@ -101,24 +164,21 @@ npm run preview
 ### GitHub Pages (Recommended)
 
 1. **Enable GitHub Pages**:
-   - Go to your repository settings
-   - Navigate to "Pages" section
+   - Go to repository settings → Pages
    - Set source to "GitHub Actions"
 
-2. **Configure Repository**:
-   - Ensure `vite.config.ts` has the correct `base` path
-   - The workflow file is already configured in `.github/workflows/deploy.yml`
+2. **Deploy**:
+   ```bash
+   # Generate your data
+   python scripts/generate_assignments.py my-participants.csv
+   
+   # Commit and push
+   git add public/secret-santa-data.enc
+   git commit -m "Add Secret Santa assignments"
+   git push
+   ```
 
-3. **Initial Deploy**:
-   - Push to the `main` branch
-   - GitHub Actions will automatically build and deploy
-   - Your app will be available at `https://username.github.io/secret-santa/`
-
-4. **Deploy with Secret Santa Data**:
-   - Generate your encrypted data using the admin panel
-   - Replace `public/secret-santa-data.enc` with your generated file
-   - Commit and push the changes
-   - GitHub Actions will redeploy with your data
+3. **Share**: Give participants the URL and passphrase
 
 ### Manual Deployment
 
@@ -137,100 +197,141 @@ Update `vite.config.ts` if deploying to a subdirectory:
 ```typescript
 export default defineConfig({
   base: '/your-repo-name/',
-  // ... other config
+  plugins: [react()],
 })
 ```
 
-### Encryption Settings
-Encryption settings are configured in `src/utils/encryption.ts`. The current setup uses:
-- Algorithm: AES-GCM
-- Key Length: 256 bits
-- PBKDF2 iterations: 100,000
-- Random salt and IV generation
+### Repository Structure
+```
+secret-santa/
+├── scripts/
+│   ├── generate_assignments.py     # Python data generation script
+│   ├── requirements.txt            # Python dependencies
+│   └── README.md                   # Script documentation
+├── src/
+│   ├── components/                 # React components
+│   ├── utils/                      # Encryption & parsing utilities
+│   └── App.tsx                     # Main app (participant lookup only)
+├── public/
+│   └── secret-santa-data.enc       # Generated encrypted data
+├── example-participants.csv        # Example CSV file
+└── venv/                           # Python virtual environment (local only)
+```
 
 ## 🎨 Customization
 
 ### Theme Colors
-Edit the CSS variables in `src/index.css`:
+Edit CSS variables in `src/index.css`:
 
 ```css
 :root {
   --holly-green: #0f5132;
   --cranberry-red: #dc3545;
   --snow-white: #ffffff;
-  /* ... other colors */
+  --warm-cream: #f8f9fa;
+  --gold: #ffc107;
 }
 ```
 
-### Adding Features
-The app is built with React + TypeScript and uses a modular structure:
-- `src/components/`: React components
-- `src/utils/`: Utility functions for encryption, CSV parsing, and file handling
-- `src/App.tsx`: Main application component
+### App Features
+The app is streamlined for participant lookup only:
+- Automatic data loading from `public/secret-santa-data.enc`
+- Passphrase input for decryption
+- Name lookup functionality
+- Print-friendly assignment cards
 
 ## 🔒 Security Considerations
 
-- **Client-Side Only**: All encryption/decryption happens in the browser
-- **No Server Storage**: No sensitive data is stored on servers
-- **Strong Encryption**: Uses Web Crypto API with AES-GCM
-- **Passphrase Protection**: Assignments are protected by a strong passphrase
-- **Local Backup**: Data is backed up to localStorage for convenience
+- **Client-Side Encryption**: All encryption happens in the browser
+- **No Server Storage**: No sensitive data stored on servers
+- **Strong Encryption**: AES-GCM with PBKDF2 key derivation
+- **Passphrase Protection**: Only those with passphrase can decrypt
+- **Organizer Privacy**: Organizers can't see actual assignments
 
 ## 🐛 Troubleshooting
 
-### "No Secret Santa data found"
-- Ensure the encrypted data file is properly uploaded to `public/secret-santa-data.enc`
-- Check that the file has the correct JSON structure
-- Verify the passphrase is correct
+### Script Issues
 
-### "Name not found"
-- Check that the name exactly matches what's in the CSV
-- Names are case-insensitive but must match exactly otherwise
-- Ensure the encrypted data was generated successfully
+**"CSV file not found"**
+- Check the file path is correct relative to project root
+- Ensure the CSV file exists and is readable
 
-### Build/Deploy Issues
-- Verify Node.js version (18+)
-- Clear `node_modules` and reinstall: `rm -rf node_modules && npm install`
-- Check GitHub Actions logs for deployment errors
+**"Need at least 2 participants"**
+- Your CSV needs minimum 2 people
+- Check that NAME column has valid entries
 
-## 🚀 Quick Deployment Guide
+**"Could not generate valid assignments"**
+- Too many SO constraints for the participant count
+- Try reducing significant other pairings
 
-1. **Fork/Clone this repository**
-2. **Enable GitHub Pages** in repository settings
-3. **First deployment** will have empty data (expected)
-4. **Generate your assignments**:
-   - Visit the deployed site
-   - Use admin panel to upload CSV and generate encrypted data
-   - Download the encrypted file
-5. **Deploy with data**:
-   - Replace `public/secret-santa-data.enc` with your file
-   - Commit and push to automatically redeploy
+### App Issues
 
-## 💡 Usage Tips
+**"No Secret Santa data found"**
+- Run the generation script first: `python scripts/generate_assignments.py your-file.csv`
+- Ensure `public/secret-santa-data.enc` exists
+- Verify the file was committed and deployed
+
+**"Failed to decrypt data"**
+- Check the passphrase is entered correctly
+- Verify you're using the passphrase from `passphrase.txt`
+
+**"No assignment found"**
+- Enter your name exactly as it appears in the CSV
+- Names are case-insensitive but must match otherwise
+
+## 💡 Complete Workflow Example
+
+```bash
+# 1. Setup (first time only)
+git clone <your-repo>
+cd secret-santa
+npm install
+python3 -m venv venv
+source venv/bin/activate
+pip install cryptography
+
+# 2. Create your participant list
+cp example-participants.csv my-family.csv
+# Edit my-family.csv with your actual participants
+
+# 3. Generate encrypted assignments
+python scripts/generate_assignments.py my-family.csv
+# Note the passphrase that's displayed
+
+# 4. Deploy
+git add public/secret-santa-data.enc
+git commit -m "Add Secret Santa assignments"
+git push
+
+# 5. Share with participants
+echo "Visit: https://yourusername.github.io/secret-santa/"
+cat passphrase.txt
+
+# 6. Cleanup
+rm passphrase.txt my-family.csv
+```
+
+## 🎄 Usage Tips
 
 ### For Organizers
-- **Test first**: Use the example CSV file to test the system
-- **Save everything**: Keep both the encrypted file and passphrase safe
-- **Share wisely**: Only share the deployed URL, never the passphrase
-- **Backup**: The passphrase is your only way to decrypt the data
+- **Test first**: Use `example-participants.csv` to test the system
+- **Save passphrase**: Copy it from `passphrase.txt` before cleanup
+- **One-time setup**: Generate data once, share URL and passphrase
+- **Privacy**: You won't see who gives to whom (only encrypted data)
 
-### For Participants
-- **Case sensitive**: Enter your name exactly as it appears in the CSV
-- **Print option**: Use the print button for a nice reference card
-- **Keep secret**: Don't share your assignment with others!
-
-### Troubleshooting
-- **"Name not found"**: Check spelling and ensure data is loaded
-- **"No data found"**: Contact organizer to verify deployment
-- **Decryption errors**: Verify the correct passphrase is being used
+### For Participants  
+- **Get passphrase**: Ask your organizer for the passphrase
+- **Enter correctly**: Names must match exactly (case-insensitive)
+- **Print reference**: Use print button for a physical card
+- **Keep secret**: Don't share your assignment!
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) file for details.
 
-## 🎄 Merry Christmas!
+## 🎁 Merry Christmas!
 
-Enjoy your Secret Santa gift exchange! Remember to keep assignments secret until the big day! 🎁
+Enjoy your Secret Santa gift exchange! Remember to keep assignments secret until the big day!
 
 ---
 

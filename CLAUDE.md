@@ -8,6 +8,7 @@ This is a **React + TypeScript + Vite** application designed to run on **GitHub 
 - **Stateful app on stateless hosting**: Uses AES-GCM encryption to store Secret Santa assignments in encrypted files
 - **Privacy protection**: Organizer cannot see actual assignments, only encrypted data
 - **GitHub Pages deployment**: Fully static with automated CI/CD via GitHub Actions
+- **Cross-platform assignment generation**: Python script replaces problematic Web Crypto API for reliable encryption
 
 ## 📁 **Project Structure**
 
@@ -16,18 +17,23 @@ secret-santa/
 ├── src/
 │   ├── components/           # React components (currently empty, all in App.tsx)
 │   ├── utils/               # Core utility modules
-│   │   ├── encryption.ts    # AES-GCM encryption/decryption
-│   │   ├── csvParser.ts     # CSV parsing & assignment generation
-│   │   └── fileUtils.ts     # File download/upload handling
-│   ├── App.tsx             # Main application component (all UI logic)
+│   │   ├── encryption.ts    # AES-GCM decryption only (browser-side)
+│   │   ├── csvParser.ts     # CSV parsing interfaces & data structures
+│   │   └── fileUtils.ts     # File loading and local storage handling
+│   ├── App.tsx             # Main application component (participant lookup)
 │   ├── App.css             # Component-specific styles
 │   ├── index.css           # Global styles with holiday theme
 │   └── main.tsx            # React entry point
+├── scripts/
+│   ├── generate_assignments.py # Python script for creating encrypted assignments
+│   ├── requirements.txt     # Python dependencies (cryptography)
+│   └── README.md           # Python script documentation
 ├── public/
-│   └── secret-santa-data.enc # Stub encrypted data file for deployment
+│   └── secret-santa-data.enc # Encrypted assignment data file
 ├── .github/workflows/
 │   └── deploy.yml          # GitHub Actions for auto-deployment
-└── example-participants.csv # Test data for development
+├── example-participants.csv # Test data for development
+└── venv/                   # Python virtual environment (local only)
 ```
 
 ## 🔧 **Key Technical Decisions**
@@ -74,27 +80,29 @@ Charlie Smith,"Artist and photographer. Gift ideas: art supplies, camera gear",
 
 ## 🔄 **Application Flow**
 
-### **For Organizers (Admin Mode)**
-1. Upload CSV with participant data
-2. App generates assignments avoiding conflicts
-3. Data is encrypted with auto-generated passphrase
-4. Download encrypted file via explicit download button
-5. Replace `public/secret-santa-data.enc` in repo
-6. Commit and push for auto-deployment
+### **For Organizers (Assignment Generation)**
+1. **Prepare CSV** with participant data (NAME, BIO, SO columns)
+2. **Run Python script**: `python scripts/generate_assignments.py`
+3. **Script generates assignments** avoiding conflicts (self/SO pairings)
+4. **Data encrypted** with auto-generated holiday-themed passphrase
+5. **Update repo**: Replace `public/secret-santa-data.enc` with generated file
+6. **Deploy**: Commit and push for GitHub Pages auto-deployment
+7. **Share passphrase** with participants
 
 ### **For Participants (Lookup Mode)**
-1. Enter name in search field
-2. Receive recipient name and gift preferences
-3. Option to print reference card
-4. "Look up another person" functionality
+1. **Visit deployed site** - app automatically loads encrypted data
+2. **Enter passphrase** to decrypt assignments
+3. **Search by name** to find Secret Santa assignment
+4. **View recipient** name and gift preferences
+5. **Print reference card** or lookup another person
 
 ## 🚨 **Known Issues & Considerations**
 
 ### **Current Limitations**
 - **All UI logic in single App.tsx file** (needs component extraction)
 - **No input validation** for participant names in lookup
-- **Browser dependency** for file downloads (won't work in all contexts)
 - **No assignment preview** for organizers before encryption
+- **Manual file replacement** required for deployment (no web admin interface)
 
 ### **Security Considerations**
 - **Passphrase is displayed in plain text** (intentional for usability)
@@ -109,12 +117,33 @@ Charlie Smith,"Artist and photographer. Gift ideas: art supplies, camera gear",
 
 ## 🛠️ **Development Workflow**
 
-### **Setup**
+### **Frontend Setup**
 ```bash
 npm install
 npm run dev          # Development server
 npm run build        # Production build
 npm run lint         # Code linting
+```
+
+### **Python Script Setup**
+```bash
+python3 -m venv venv
+source venv/bin/activate  # Mac/Linux
+pip install cryptography
+```
+
+### **Assignment Generation Workflow**
+```bash
+# 1. Generate encrypted assignments
+python scripts/generate_assignments.py [csv_file]
+
+# 2. Test locally
+npm run dev  # Verify passphrase works and lookups function
+
+# 3. Deploy
+git add public/secret-santa-data.enc
+git commit -m "Update Secret Santa assignments"
+git push origin main
 ```
 
 ### **Deployment**
@@ -123,10 +152,10 @@ npm run lint         # Code linting
 - **Build output**: `dist/` directory
 
 ### **Testing Strategy**
-- Use `example-participants.csv` for testing
-- Check console logs for CSV parsing debugging
-- Test both admin and participant flows
-- Verify file download functionality across browsers
+- Use `example-participants.csv` for testing Python script
+- Test generated passphrase with development server
+- Verify participant name lookups work correctly
+- Check mobile responsiveness and print functionality
 
 ## 🎯 **Immediate Improvement Opportunities**
 
@@ -150,11 +179,12 @@ npm run lint         # Code linting
 
 ## 🔍 **Key Files to Understand**
 
-1. **`src/App.tsx`** - Main application logic (550+ lines, needs refactoring)
-2. **`src/utils/encryption.ts`** - Core encryption functionality
-3. **`src/utils/csvParser.ts`** - Assignment generation algorithm
-4. **`src/utils/fileUtils.ts`** - File handling and downloads
-5. **`vite.config.ts`** - Build configuration for GitHub Pages
+1. **`scripts/generate_assignments.py`** - Python script for creating encrypted assignments
+2. **`src/App.tsx`** - Main React application (participant lookup interface)
+3. **`src/utils/encryption.ts`** - Browser-side decryption functionality
+4. **`src/utils/fileUtils.ts`** - File loading and automatic data fetching
+5. **`src/utils/csvParser.ts`** - Data structures and parsing interfaces
+6. **`vite.config.ts`** - Build configuration for GitHub Pages
 
 ## 💡 **Architecture Decisions Context**
 
@@ -184,13 +214,13 @@ interface SecretSantaAssignment {
 }
 ```
 
-### **Encryption Process**
-1. CSV → Participant objects
-2. Generate assignments with conflict avoidance
-3. Serialize to JSON
-4. Encrypt with AES-GCM + random passphrase
-5. Wrap in file format with metadata
-6. Download as `.enc` file
+### **Encryption Process (Python Script)**
+1. **Parse CSV** → Participant objects with conflict detection
+2. **Generate assignments** with SO avoidance and retry logic (up to 1000 attempts)
+3. **Create passphrase** using holiday-themed words + random number
+4. **Encrypt data** with AES-GCM + PBKDF2 key derivation (100k iterations)
+5. **Output file** in JSON format with base64 encrypted payload
+6. **Compatible format** with Web Crypto API for browser decryption
 
 ## 🎄 **Theme & Styling Notes**
 
@@ -202,17 +232,31 @@ interface SecretSantaAssignment {
 
 ## ⚠️ **Critical Dependencies**
 
-- **Web Crypto API**: Required for encryption (modern browsers only)
-- **File API**: Required for CSV uploads and encrypted file downloads
+### **Frontend (Browser)**
+- **Web Crypto API**: Required for decryption (modern browsers only)
+- **Fetch API**: Automatically loads encrypted data from public directory
 - **localStorage**: Used for backup storage (graceful degradation)
+
+### **Backend (Python Script)**
+- **Python 3.7+**: Required for script execution
+- **cryptography package**: Provides AES-GCM encryption compatible with Web Crypto API
+- **Virtual environment**: Recommended for dependency isolation
 
 ## 🚀 **Deployment Checklist**
 
-1. Update `vite.config.ts` base path if repo name changes
-2. Replace `public/secret-santa-data.enc` with real data after first deployment
-3. Verify GitHub Pages is enabled in repository settings
-4. Test file download functionality in target browsers
-5. Confirm mobile experience on actual devices
+### **Initial Setup**
+1. **Enable GitHub Pages** in repository settings
+2. **Update `vite.config.ts`** base path if repo name changes
+3. **Set up Python environment** for assignment generation
+
+### **Per-Event Deployment**
+1. **Prepare participant CSV** with NAME, BIO, SO columns
+2. **Run Python script** to generate encrypted assignments
+3. **Test locally** with development server and generated passphrase
+4. **Commit encrypted file** to repository
+5. **Push to main branch** for auto-deployment via GitHub Actions
+6. **Share passphrase** with participants
+7. **Verify deployed site** works on actual devices
 
 This codebase successfully solves a unique problem (stateful app on static hosting) with a clean, working solution that just needs better organization and component extraction for maintainability.
 
@@ -222,4 +266,21 @@ This codebase successfully solves a unique problem (stateful app on static hosti
 - **Design constraints**: Minimalist + Christmas theme specifically requested
 - **Privacy requirement**: Organizer must not see actual assignments
 - **Hosting constraint**: Must work on GitHub Pages (static only)
+- **Crypto solution**: Python script replaces problematic Web Crypto API admin functionality
+- **Cross-platform**: Mac-compatible Python development with venv isolation
 - **User experience**: All error messages use proper error instances for better debugging
+
+## 🐍 **Python Script Architecture**
+
+### **Design Decisions**
+- **Standalone script**: No web interface needed for assignment generation
+- **Compatible encryption**: Uses same AES-GCM format as Web Crypto API
+- **Holiday theming**: Auto-generated passphrases use Christmas vocabulary
+- **Robust conflict resolution**: Handles significant other constraints with retry logic
+- **Clear output**: Provides passphrase, file location, and next steps
+
+### **Security Approach**
+- **PBKDF2 key derivation**: 100,000 iterations with SHA-256
+- **Proper randomness**: Uses Python's `secrets` module for cryptographic operations
+- **No key storage**: Passphrase must be shared manually (intentional design)
+- **Format compatibility**: Exactly matches browser expectations for seamless decryption
