@@ -212,35 +212,6 @@ export function assignmentsToEncryptedFormat(
   return JSON.stringify(assignments, null, 2);
 }
 
-// Parse encrypted data back to assignments (legacy v1.0 format)
-export function parseEncryptedFormat(data: string): SecretSantaAssignment[] {
-  try {
-    const assignments = JSON.parse(data);
-
-    // Validate the structure
-    if (!Array.isArray(assignments)) {
-      throw new Error("Invalid data format: expected array");
-    }
-
-    for (const assignment of assignments) {
-      if (
-        !assignment.giver ||
-        !assignment.recipient ||
-        assignment.recipientBio === undefined
-      ) {
-        throw new Error("Invalid assignment format: missing required fields");
-      }
-    }
-
-    return assignments;
-  } catch (error) {
-    throw new Error(
-      "Failed to parse Secret Santa data: " +
-        (error instanceof Error ? error.message : String(error)),
-    );
-  }
-}
-
 // Parse individual assignment data (v2.0 format)
 export function parseIndividualAssignment(data: string): SecretSantaAssignment {
   try {

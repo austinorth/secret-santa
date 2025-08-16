@@ -150,11 +150,3 @@ export async function findAndDecryptAssignment(
     );
   }
 }
-
-// Legacy function for backward compatibility with old format (v1.0)
-export async function decryptLegacyData(
-  encryptedData: string,
-  passphrase: string,
-): Promise<string> {
-  return decryptData(encryptedData, passphrase);
-}
