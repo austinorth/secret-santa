@@ -46,12 +46,12 @@ This app revolutionizes Secret Santa privacy by giving each participant their ow
    ```bash
    # Install dependencies (first time only)
    npm install
-   
+
    # Set up Python environment
    python3 -m venv venv
    source venv/bin/activate
    pip install cryptography
-   
+
    # Generate encrypted assignments with individual passphrases
    python scripts/generate_assignments.py your-participants.csv
    ```
@@ -64,7 +64,7 @@ This app revolutionizes Secret Santa privacy by giving each participant their ow
    git push
    ```
 
-4. **Distribute Passphrases**: 
+4. **Distribute Passphrases**:
    - Open `secret-santa-passphrases.csv`
    - Send each person ONLY their own passphrase
    - Delete the passphrases file after distribution for security
@@ -84,7 +84,7 @@ Charlie Wilson,"Musician and reader. Gift ideas: music gear, books, vinyl record
 
 **Column Details:**
 - **NAME** (required): Full name of participant
-- **BIO** (optional): Hobbies, interests, and gift suggestions  
+- **BIO** (optional): Hobbies, interests, and gift suggestions
 - **SO** (optional): Significant other's name to prevent pairing
 
 **Important Notes:**
@@ -214,7 +214,7 @@ python scripts/generate_assignments.py my-participants.csv --show-assignments
    # Generate your data
    source venv/bin/activate
    python scripts/generate_assignments.py my-participants.csv
-   
+
    # Commit ONLY the encrypted file
    git add public/secret-santa-data.enc
    git commit -m "Update Secret Santa assignments"
@@ -352,7 +352,7 @@ The script uses a private Christmas word bank for secure passphrase generation:
 git clone <your-repo>
 cd secret-santa
 npm install
-python3 -m venv venv
+python3 -m venv .venv
 source venv/bin/activate
 pip install cryptography
 
@@ -394,7 +394,7 @@ echo "Each person enters their unique passphrase to see their assignment"
 - **Delete passphrases file**: Remove `secret-santa-passphrases.csv` after distribution
 - **No shared access**: Unlike traditional Secret Santa, there's no "master key"
 
-### For Participants  
+### For Participants
 - **Personal passphrase**: Your passphrase is unique to you
 - **Keep it private**: Don't share your passphrase with others
 - **Enter carefully**: Passphrases are case-sensitive

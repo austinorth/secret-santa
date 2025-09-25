@@ -43,3 +43,7 @@ secret-santa-passphrases.csv
 
 # Private word bank (keep secure)
 /private/
+
+# Python virtual environment
+.venv/
+venv/
