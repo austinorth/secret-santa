@@ -202,7 +202,7 @@ function App() {
                 <div class="recipient">Your recipient: ${state.assignment.recipient}</div>
                 <div class="bio">
                   <strong>Gift Ideas & Preferences:</strong><br>
-                  ${state.assignment.recipientBio || "No additional information provided"}
+                  ${state.assignment.recipientBio ? state.assignment.recipientBio.split(',').map(item => item.trim()).join('<br>') : "No additional information provided"}
                 </div>
               </div>
             </body>
@@ -345,7 +345,11 @@ function App() {
                     Gift Ideas & Preferences:
                   </div>
                   <div className="bio-content">
-                    {state.assignment.recipientBio}
+                    {state.assignment.recipientBio.split(',').map((item, index) => (
+                      <div key={index} className="bio-item">
+                        {item.trim()}
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
