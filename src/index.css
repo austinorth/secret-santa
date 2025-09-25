@@ -1,0 +1,640 @@
+:root {
+    /* Windows 95 Color Palette */
+    --win95-silver: #c0c0c0;
+    --win95-dark-gray: #808080;
+    --win95-light-gray: #dfdfdf;
+    --win95-white: #ffffff;
+    --win95-black: #000000;
+    --win95-blue: #0000ff;
+    --win95-navy: #000080;
+    --win95-maroon: #800000;
+
+    font-family: "MS Sans Serif", sans-serif;
+    line-height: 1.2;
+    font-weight: 400;
+
+    color-scheme: light;
+    color: var(--win95-black);
+    background-color: var(--win95-silver);
+
+    font-synthesis: none;
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+
+
+
+.snowflake-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+
+
+/* ASCII Snowflake Animations */
+@keyframes snowfall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes snowfall-slow {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 0;
+    }
+    15% {
+        opacity: 0.9;
+    }
+    85% {
+        opacity: 0.9;
+    }
+    100% {
+        transform: translateY(100vh) rotate(180deg);
+        opacity: 0;
+    }
+}
+
+@keyframes snowfall-drift {
+    0% {
+        transform: translateY(-100vh) translateX(0px) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.7;
+    }
+    50% {
+        transform: translateY(-10vh) translateX(20px) rotate(180deg);
+        opacity: 0.9;
+    }
+    90% {
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(100vh) translateX(-20px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.ascii-snowflake {
+    position: absolute;
+    color: var(--win95-dark-gray);
+    text-shadow: 1px 1px 0px var(--win95-white);
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    font-family: "MS Sans Serif", sans-serif;
+    font-weight: normal;
+    pointer-events: none;
+}
+
+.ascii-snowflake:nth-of-type(1) {
+    left: 8%;
+    font-size: 14px;
+    animation: snowfall 12s linear infinite;
+    animation-delay: -1s;
+}
+
+.ascii-snowflake:nth-of-type(2) {
+    left: 18%;
+    font-size: 10px;
+    animation: snowfall-slow 15s linear infinite;
+    animation-delay: -3s;
+}
+
+.ascii-snowflake:nth-of-type(3) {
+    left: 28%;
+    font-size: 16px;
+    animation: snowfall-drift 18s linear infinite;
+    animation-delay: -5s;
+}
+
+.ascii-snowflake:nth-of-type(4) {
+    left: 38%;
+    font-size: 12px;
+    animation: snowfall 14s linear infinite;
+    animation-delay: -2s;
+}
+
+.ascii-snowflake:nth-of-type(5) {
+    left: 48%;
+    font-size: 8px;
+    animation: snowfall-slow 16s linear infinite;
+    animation-delay: -7s;
+}
+
+.ascii-snowflake:nth-of-type(6) {
+    left: 58%;
+    font-size: 15px;
+    animation: snowfall-drift 13s linear infinite;
+    animation-delay: -4s;
+}
+
+.ascii-snowflake:nth-of-type(7) {
+    left: 68%;
+    font-size: 11px;
+    animation: snowfall 17s linear infinite;
+    animation-delay: -6s;
+}
+
+.ascii-snowflake:nth-of-type(8) {
+    left: 78%;
+    font-size: 13px;
+    animation: snowfall-slow 19s linear infinite;
+    animation-delay: -1.5s;
+}
+
+.ascii-snowflake:nth-of-type(9) {
+    left: 88%;
+    font-size: 9px;
+    animation: snowfall-drift 15s linear infinite;
+    animation-delay: -8s;
+}
+
+.ascii-snowflake:nth-of-type(10) {
+    left: 98%;
+    font-size: 14px;
+    animation: snowfall 11s linear infinite;
+    animation-delay: -3.5s;
+}
+
+
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: var(--win95-silver);
+    position: relative;
+    overflow-x: hidden;
+    font-family: "MS Sans Serif", sans-serif;
+    font-size: 11px;
+}
+
+body::before {
+    display: none;
+}
+
+
+
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--win95-silver);
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 8px;
+    flex: 1;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 16px;
+    background: var(--win95-silver);
+    padding: 8px;
+    border: 2px outset var(--win95-silver);
+}
+
+.header h1 {
+    color: var(--win95-black);
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 0 4px 0;
+    font-family: "MS Sans Serif", sans-serif;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.header .subtitle {
+    color: var(--win95-black);
+    font-size: 11px;
+    font-weight: normal;
+    text-shadow: none;
+    animation: none;
+}
+
+.card {
+    background: var(--win95-silver);
+    border: 2px inset var(--win95-silver);
+    border-radius: 0;
+    padding: 8px;
+    box-shadow: none;
+    margin-bottom: 8px;
+    position: relative;
+    overflow: visible;
+    animation: none;
+}
+
+.card::before {
+    display: none;
+}
+
+.card::after {
+    display: none;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--win95-black);
+    font-weight: normal;
+    text-transform: none;
+    font-size: 11px;
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+.form-control {
+    width: 100%;
+    padding: 4px;
+    border: 2px inset var(--win95-silver);
+    border-radius: 0;
+    font-size: 11px;
+    background: var(--win95-white);
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    outline: 1px dotted var(--win95-black);
+    outline-offset: -2px;
+    background: var(--win95-white);
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid;
+    border-radius: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    font-family: "Comic Sans MS", cursive;
+    letter-spacing: 1px;
+}
+
+.btn::before {
+    content: ">> ";
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: "Courier New", monospace;
+}
+
+.btn-primary {
+    background: var(--win95-silver);
+    color: var(--win95-black);
+    border: 2px outset var(--win95-silver);
+}
+
+.btn-primary:hover {
+    background: var(--win95-light-gray);
+}
+
+.btn-secondary {
+    background: var(--win95-silver);
+    color: var(--win95-black);
+    border: 2px outset var(--win95-silver);
+}
+
+.btn-secondary:hover {
+    background: var(--win95-light-gray);
+}
+
+.btn-outline {
+    background: var(--win95-silver);
+    color: var(--win95-black);
+    border: 2px outset var(--win95-silver);
+}
+
+.btn-outline:hover {
+    background: var(--win95-light-gray);
+}
+
+.gift-info {
+    background: var(--win95-silver);
+    border: 2px inset var(--win95-silver);
+    border-radius: 0;
+    padding: 8px;
+    margin: 8px 0;
+    position: relative;
+}
+
+.gift-info::before {
+    display: none;
+}
+
+.gift-info h3 {
+    color: var(--win95-black);
+    margin: 0 0 8px 0;
+    font-size: 11px;
+    text-shadow: none;
+    text-transform: none;
+    font-family: "MS Sans Serif", sans-serif;
+    font-weight: bold;
+}
+
+.gift-info .recipient-name {
+    color: var(--win95-black);
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    text-shadow: none;
+    animation: none;
+    text-transform: none;
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+.gift-info .bio {
+    color: var(--win95-black);
+    line-height: 1.2;
+    white-space: pre-wrap;
+    font-family: "MS Sans Serif", sans-serif;
+    text-shadow: none;
+    font-size: 11px;
+}
+
+.admin-section {
+    border-top: 2px inset var(--win95-silver);
+    padding-top: 8px;
+    margin-top: 16px;
+    position: relative;
+    background: var(--win95-silver);
+}
+
+.admin-section::before {
+    display: none;
+}
+
+.admin-section h2 {
+    color: var(--win95-black);
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: none;
+    text-transform: none;
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+.file-upload-area {
+    border: 2px inset var(--win95-silver);
+    border-radius: 0;
+    padding: 8px;
+    text-align: center;
+    background: var(--win95-silver);
+    box-shadow: none;
+}
+
+.file-upload-area:hover {
+    background: var(--win95-light-gray);
+}
+
+.file-upload-area.dragover {
+    background: var(--win95-light-gray);
+    border: 2px outset var(--win95-silver);
+}
+
+.hidden {
+    display: none;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mb-0 {
+    margin-bottom: 0;
+}
+.mb-1 {
+    margin-bottom: 0.5rem;
+}
+.mb-2 {
+    margin-bottom: 1rem;
+}
+.mb-3 {
+    margin-bottom: 1.5rem;
+}
+
+.mt-0 {
+    margin-top: 0;
+}
+.mt-1 {
+    margin-top: 0.5rem;
+}
+.mt-2 {
+    margin-top: 1rem;
+}
+.mt-3 {
+    margin-top: 1.5rem;
+}
+
+.alert {
+    padding: 8px;
+    border-radius: 0;
+    margin-bottom: 8px;
+    border: 2px inset var(--win95-silver);
+    font-weight: normal;
+    text-transform: none;
+    font-family: "MS Sans Serif", sans-serif;
+    font-size: 11px;
+    background: var(--win95-silver);
+}
+
+.alert-success {
+    background: var(--win95-silver);
+    border-color: var(--win95-navy);
+    color: var(--win95-navy);
+    text-shadow: none;
+    box-shadow: none;
+}
+
+.alert-success::before {
+    display: none;
+}
+
+.alert-error {
+    background: var(--win95-silver);
+    border-color: var(--win95-maroon);
+    color: var(--win95-maroon);
+    text-shadow: none;
+    box-shadow: none;
+    animation: none;
+}
+
+.alert-error::before {
+    display: none;
+}
+
+.footer {
+    text-align: center;
+    padding: 8px;
+    color: var(--win95-black);
+    font-size: 11px;
+    text-shadow: none;
+    font-family: "MS Sans Serif", sans-serif;
+    border-top: 2px inset var(--win95-silver);
+    margin-top: 8px;
+    background: var(--win95-silver);
+}
+
+.footer::before {
+    display: none;
+}
+
+.footer::after {
+    display: none;
+}
+
+/* Print styles */
+@media print {
+    .cyber-container {
+        display: none;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+
+    body::before {
+        display: none;
+    }
+
+    .container {
+        max-width: none;
+        margin: 0;
+        padding: 1rem;
+    }
+
+    .admin-section,
+    .btn,
+    .header .subtitle {
+        display: none !important;
+    }
+
+    .card {
+        background: white !important;
+        box-shadow: none;
+        border: 3px solid black;
+        animation: none;
+    }
+
+    .card::before,
+    .card::after {
+        display: none;
+    }
+
+    .gift-info {
+        border: 3px solid black;
+        margin: 0;
+        background: white !important;
+        box-shadow: none;
+        animation: none;
+    }
+
+    .gift-info::before {
+        display: none;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: black !important;
+        text-shadow: none;
+        animation: none;
+    }
+
+    .alert {
+        animation: none;
+    }
+}
+
+/* Responsive design with 90s flair */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .card {
+        padding: 1.5rem;
+    }
+
+    .cyber-star {
+        font-size: 10px;
+    }
+}
+
+/* Reduced motion support - but keep some 90s energy! */
+@media (prefers-reduced-motion: reduce) {
+    .cyber-star,
+    .header h1,
+    .btn:hover {
+        animation: none !important;
+    }
+
+    .card {
+        animation: none;
+        border-color: var(--win95-silver);
+        box-shadow: none;
+    }
+}
+
+/* High contrast mode - MAXIMUM 90S ENERGY */
+@media (prefers-contrast: high) {
+    .card {
+        border: 2px solid var(--win95-black);
+        background: var(--win95-white);
+    }
+
+    .form-control {
+        border-width: 3px;
+        background: var(--dark-bg) !important;
+    }
+
+    .gift-info {
+        border-width: 4px;
+        background: var(--dark-bg) !important;
+    }
+}

@@ -1,0 +1,713 @@
+/* Windows 95 Secret Santa App Styles */
+
+.app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: var(--win95-silver);
+    font-family: "MS Sans Serif", sans-serif;
+    font-size: 11px;
+    border: 2px outset var(--win95-silver);
+}
+
+/* Windows 95 Title Bar */
+.title-bar {
+    background: linear-gradient(
+        90deg,
+        var(--win95-navy) 0%,
+        var(--win95-blue) 100%
+    );
+    color: var(--win95-white);
+    padding: 2px 4px;
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--win95-dark-gray);
+}
+
+.title-bar-text {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.title-bar-controls {
+    display: flex;
+    gap: 2px;
+}
+
+.title-bar-control {
+    width: 16px;
+    height: 14px;
+    background: var(--win95-silver);
+    border: 1px outset var(--win95-silver);
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--win95-black);
+    cursor: pointer;
+}
+
+.title-bar-control:active {
+    border: 1px inset var(--win95-silver);
+}
+
+.header {
+    text-align: center;
+    padding: 8px;
+    background: var(--win95-silver);
+    color: var(--win95-black);
+    margin-bottom: 8px;
+}
+
+.header::before {
+    display: none;
+}
+
+.header::after {
+    display: none;
+}
+
+.header h1 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 4px 0;
+    font-family: "MS Sans Serif", sans-serif;
+    color: var(--win95-black);
+}
+
+.header p {
+    font-size: 11px;
+    margin: 0;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+.main {
+    flex: 1;
+    padding: 8px;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.card {
+    background: var(--win95-silver);
+    border: 2px inset var(--win95-silver);
+    border-radius: 0;
+    padding: 8px;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.card:hover {
+    background: var(--win95-silver);
+}
+
+.card::before {
+    display: none;
+}
+
+.card::after {
+    display: none;
+}
+
+.card h2 {
+    font-size: 12px;
+    font-weight: bold;
+    margin: 0 0 8px 0;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+.card h2::before {
+    display: none;
+}
+
+.card h2::after {
+    display: none;
+}
+
+.card h3 {
+    font-size: 11px;
+    font-weight: bold;
+    margin: 0 0 4px 0;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+.card p {
+    font-size: 11px;
+    line-height: 1.2;
+    margin: 0 0 8px 0;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+.loading {
+    text-align: center;
+    padding: 16px;
+    font-size: 11px;
+    color: var(--win95-black);
+    background: var(--win95-silver);
+    border: 2px inset var(--win95-silver);
+}
+
+.loading::before {
+    display: none;
+}
+
+.loading::after {
+    display: none;
+}
+
+.error-message,
+.success-message {
+    padding: 8px;
+    margin: 8px 0;
+    border-radius: 0;
+    font-size: 11px;
+    font-family: "MS Sans Serif", sans-serif;
+    border: 2px inset var(--win95-silver);
+}
+
+.error-message {
+    background: var(--win95-silver);
+    color: var(--win95-maroon);
+    border-color: var(--win95-maroon);
+}
+
+.error-message::before {
+    display: none;
+}
+
+.success-message {
+    background: var(--win95-silver);
+    color: var(--win95-navy);
+    border-color: var(--win95-navy);
+}
+
+.success-message::before {
+    display: none;
+}
+
+.input-group {
+    display: flex;
+    margin-bottom: 8px;
+    align-items: stretch;
+}
+
+.input-group::before {
+    display: none;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 2px 4px;
+    border: 2px inset var(--win95-silver);
+    border-radius: 0;
+    font-size: 11px;
+    background: var(--win95-white);
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+    margin-right: 4px;
+}
+
+.input-group input:focus {
+    outline: 1px dotted var(--win95-black);
+    outline-offset: -2px;
+}
+
+.input-group input::placeholder {
+    color: var(--win95-dark-gray);
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+.input-group input:disabled {
+    background: var(--win95-silver);
+    color: var(--win95-dark-gray);
+}
+
+.input-group button {
+    padding: 2px 8px;
+    border: 2px outset var(--win95-silver);
+    border-radius: 0;
+    background: var(--win95-silver);
+    color: var(--win95-black);
+    font-size: 11px;
+    font-family: "MS Sans Serif", sans-serif;
+    cursor: pointer;
+    min-width: 60px;
+}
+
+.input-group button::before {
+    display: none;
+}
+
+.input-group button::after {
+    display: none;
+}
+
+.input-group button:hover:not(:disabled) {
+    background: var(--win95-light-gray);
+}
+
+.input-group button:active:not(:disabled) {
+    border: 2px inset var(--win95-silver);
+}
+
+.input-group button:disabled {
+    color: var(--win95-dark-gray);
+    cursor: default;
+}
+
+.participant-count {
+    background: var(--win95-silver);
+    border: 2px inset var(--win95-silver);
+    padding: 8px;
+    margin: 8px 0;
+    font-size: 11px;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+    text-align: center;
+}
+
+.participant-count::before {
+    display: none;
+}
+
+.assignment-card {
+    background: var(--win95-silver);
+    border: 2px inset var(--win95-silver);
+    border-radius: 0;
+    padding: 12px;
+    margin: 8px 0;
+}
+
+.assignment-card::before {
+    display: none;
+}
+
+.assignment-card::after {
+    display: none;
+}
+
+.assignment-header {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.assignment-header::before {
+    display: none;
+}
+
+.assignment-subtitle {
+    font-size: 11px;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+    margin-bottom: 8px;
+}
+
+.assignment-content {
+    margin-bottom: 12px;
+}
+
+.recipient-section {
+    margin-bottom: 12px;
+}
+
+.recipient-section::before {
+    display: none;
+}
+
+.recipient-label {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+    margin-bottom: 4px;
+}
+
+.recipient-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--win95-navy);
+    font-family: "MS Sans Serif", sans-serif;
+    background: var(--win95-white);
+    border: 2px inset var(--win95-silver);
+    padding: 4px 8px;
+    margin-bottom: 8px;
+    display: inline-block;
+}
+
+.bio-section {
+    background: var(--win95-white);
+    border: 2px inset var(--win95-silver);
+    padding: 8px;
+    margin: 8px 0;
+}
+
+.bio-section::before {
+    display: none;
+}
+
+.bio-label {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+    margin-bottom: 4px;
+}
+
+.bio-content {
+    font-size: 11px;
+    line-height: 1.3;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+    white-space: pre-wrap;
+}
+
+.assignment-actions {
+    text-align: center;
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.print-button,
+.secondary-button {
+    padding: 4px 12px;
+    border: 2px outset var(--win95-silver);
+    border-radius: 0;
+    background: var(--win95-silver);
+    color: var(--win95-black);
+    font-size: 11px;
+    font-family: "MS Sans Serif", sans-serif;
+    cursor: pointer;
+}
+
+.print-button {
+    background: var(--win95-silver);
+    color: var(--win95-black);
+}
+
+.print-button::before {
+    display: none;
+}
+
+.print-button::after {
+    display: none;
+}
+
+.print-button:hover {
+    background: var(--win95-light-gray);
+}
+
+.print-button:active {
+    border: 2px inset var(--win95-silver);
+}
+
+.secondary-button {
+    background: var(--win95-silver);
+    color: var(--win95-black);
+}
+
+.secondary-button:hover {
+    background: var(--win95-light-gray);
+}
+
+.secondary-button:active {
+    border: 2px inset var(--win95-silver);
+}
+
+.instructions {
+    background: var(--win95-silver);
+    border: 2px inset var(--win95-silver);
+    padding: 12px;
+    margin: 8px 0;
+    font-size: 11px;
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+.instructions::before {
+    display: none;
+}
+
+.instructions ol {
+    margin: 8px 0;
+    padding-left: 20px;
+}
+
+.instructions li {
+    margin-bottom: 4px;
+    color: var(--win95-black);
+}
+
+.instructions li::marker {
+    color: var(--win95-black);
+}
+
+.instructions p {
+    margin: 4px 0;
+}
+
+.instructions strong {
+    font-weight: bold;
+    color: var(--win95-black);
+}
+
+.footer {
+    background: var(--win95-silver);
+    border-top: 2px inset var(--win95-silver);
+    padding: 8px;
+    text-align: center;
+    margin-top: auto;
+}
+
+.footer::before {
+    display: none;
+}
+
+.footer p {
+    font-size: 11px;
+    color: var(--win95-black);
+    margin: 0;
+    font-family: "MS Sans Serif", sans-serif;
+}
+
+.footer::after {
+    display: none;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .header {
+        padding: 6px;
+    }
+
+    .header h1 {
+        font-size: 14px;
+    }
+
+    .header p {
+        font-size: 10px;
+    }
+
+    .main {
+        padding: 6px;
+    }
+
+    .card {
+        padding: 6px;
+    }
+
+    .assignment-card {
+        padding: 8px;
+    }
+
+    .assignment-content {
+        margin-bottom: 8px;
+    }
+
+    .recipient-name {
+        font-size: 12px;
+    }
+
+    .bio-section {
+        padding: 6px;
+    }
+
+    .bio-content {
+        font-size: 10px;
+    }
+
+    .input-group {
+        flex-direction: column;
+    }
+
+    .input-group input {
+        margin-right: 0;
+        margin-bottom: 4px;
+    }
+
+    .assignment-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .assignment-actions button {
+        width: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 4px;
+    }
+
+    .header h1 {
+        font-size: 12px;
+    }
+
+    .card {
+        padding: 4px;
+    }
+
+    .assignment-card {
+        padding: 6px;
+    }
+
+    .card h2 {
+        font-size: 11px;
+    }
+
+    .assignment-header {
+        margin-bottom: 8px;
+    }
+
+    .assignment-subtitle {
+        font-size: 10px;
+    }
+
+    .recipient-label {
+        font-size: 10px;
+    }
+
+    .recipient-name {
+        font-size: 11px;
+        padding: 2px 4px;
+    }
+
+    .bio-label {
+        font-size: 10px;
+    }
+
+    .bio-section {
+        padding: 4px;
+    }
+
+    .input-group input,
+    .input-group button {
+        padding: 4px;
+        font-size: 10px;
+    }
+
+    .print-button,
+    .secondary-button {
+        padding: 6px 8px;
+        font-size: 10px;
+    }
+}
+
+@media print {
+    .app {
+        background: white;
+    }
+
+    .header,
+    .footer {
+        display: none;
+    }
+
+    .card {
+        border: 1px solid black;
+        background: white;
+    }
+
+    .input-group,
+    .participant-count {
+        display: none;
+    }
+
+    .assignment-actions {
+        display: none;
+    }
+
+    .recipient-section,
+    .bio-section {
+        border: 1px solid black;
+        background: white;
+    }
+
+    .header h1 {
+        color: black;
+        font-size: 16px;
+    }
+
+    .card::before,
+    .card::after,
+    .assignment-card::before,
+    .assignment-card::after {
+        display: none;
+    }
+
+    .error-message,
+    .success-message {
+        display: none;
+    }
+}
+
+button:focus,
+input:focus {
+    outline: 1px dotted var(--win95-black);
+    outline-offset: -2px;
+}
+
+@media (prefers-contrast: high) {
+    .card {
+        border: 2px solid var(--win95-black);
+        background: var(--win95-white);
+    }
+
+    .input-group input {
+        border: 2px solid var(--win95-black);
+        background: var(--win95-white);
+    }
+
+    .bio-section,
+    .recipient-section {
+        border: 2px solid var(--win95-black);
+        background: var(--win95-white);
+    }
+
+    .error-message,
+    .success-message {
+        border: 2px solid var(--win95-black);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .header h1,
+    .card,
+    .input-group button,
+    .print-button,
+    .secondary-button,
+    .error-message {
+        animation: none;
+        transition: none;
+    }
+
+    .card:hover,
+    .input-group input:focus,
+    .input-group button:hover,
+    .print-button:hover,
+    .secondary-button:hover {
+        transform: none;
+        transition: none;
+    }
+
+    .header h1 {
+        animation: none;
+        text-shadow: none;
+    }
+
+    .card {
+        animation: none;
+    }
+}
