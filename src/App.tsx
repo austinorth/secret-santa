@@ -152,49 +152,56 @@ function App() {
               <title>Secret Santa Assignment - ${state.assignment.giver}</title>
               <style>
                 body {
-                  font-family: Arial, sans-serif;
+                  font-family: "MS Sans Serif", sans-serif;
                   max-width: 400px;
                   margin: 0 auto;
                   padding: 20px;
-                  background: white;
+                  background: #c0c0c0;
+                  font-size: 11px;
                 }
                 .card {
-                  border: 2px solid #0f5132;
-                  border-radius: 10px;
-                  padding: 20px;
+                  border: 2px inset #c0c0c0;
+                  padding: 8px;
                   text-align: center;
-                  background: #f8f9fa;
+                  background: #c0c0c0;
                 }
                 .title {
-                  color: #0f5132;
-                  font-size: 24px;
+                  color: #000000;
+                  font-size: 12px;
                   font-weight: bold;
-                  margin-bottom: 20px;
+                  margin-bottom: 8px;
                 }
                 .recipient {
-                  font-size: 20px;
+                  font-size: 11px;
                   font-weight: bold;
-                  color: #dc3545;
-                  margin: 15px 0;
+                  color: #000080;
+                  margin: 8px 0;
+                  background: #ffffff;
+                  border: 2px inset #c0c0c0;
+                  padding: 4px;
                 }
                 .bio {
-                  font-size: 14px;
-                  line-height: 1.4;
-                  margin-top: 15px;
+                  font-size: 11px;
+                  line-height: 1.2;
+                  margin-top: 8px;
                   text-align: left;
+                  background: #ffffff;
+                  border: 2px inset #c0c0c0;
+                  padding: 8px;
                 }
                 @media print {
-                  body { margin: 0; }
+                  body { margin: 0; background: white; }
+                  .card { border: 1px solid black; background: white; }
                 }
               </style>
             </head>
             <body>
               <div class="card">
-                <div class="title">*** CYBER SANTA MISSION ***</div>
-                <div><strong>AGENT:</strong> ${state.assignment.giver}</div>
-                <div class="recipient">>>> TARGET: ${state.assignment.recipient} <<<</div>
+                <div class="title">Secret Santa Assignment</div>
+                <div><strong>For:</strong> ${state.assignment.giver}</div>
+                <div class="recipient">Your recipient: ${state.assignment.recipient}</div>
                 <div class="bio">
-                  <strong>INTEL REPORT:</strong><br>
+                  <strong>Gift Ideas & Preferences:</strong><br>
                   ${state.assignment.recipientBio || "No additional information provided"}
                 </div>
               </div>
@@ -209,26 +216,38 @@ function App() {
 
   return (
     <div className="app">
-      {/* Retro Visitor Counter */}
-      <div className="visitor-counter"></div>
+      {/* Windows 95 Title Bar */}
+      <div className="title-bar">
+        <div className="title-bar-text">
+          <span>🎁</span>
+          <span>Secret Santa - SecretSanta.exe</span>
+        </div>
+        <div className="title-bar-controls">
+          <div className="title-bar-control">_</div>
+          <div className="title-bar-control">□</div>
+          <div className="title-bar-control">×</div>
+        </div>
+      </div>
 
-      {/* Radical Cyber Matrix Background */}
-      <div className="cyber-container">
-        <div className="cyber-star">*</div>
-        <div className="cyber-star">+</div>
-        <div className="cyber-star">.</div>
-        <div className="cyber-star">*</div>
-        <div className="cyber-star">+</div>
-        <div className="cyber-star">.</div>
-        <div className="cyber-star">*</div>
-        <div className="cyber-star">+</div>
-        <div className="cyber-star">.</div>
-        <div className="cyber-star">*</div>
+
+
+      {/* Snowflakes Animation Container */}
+      <div className="snowflake-container">
+        <div className="ascii-snowflake">*</div>
+        <div className="ascii-snowflake">+</div>
+        <div className="ascii-snowflake">*</div>
+        <div className="ascii-snowflake">+</div>
+        <div className="ascii-snowflake">*</div>
+        <div className="ascii-snowflake">+</div>
+        <div className="ascii-snowflake">*</div>
+        <div className="ascii-snowflake">+</div>
+        <div className="ascii-snowflake">*</div>
+        <div className="ascii-snowflake">+</div>
       </div>
 
       <header className="header">
-        <h1>*** SECRET SANTA CYBER LOOKUP ***</h1>
-        <p>~~ WELCOME TO THE DIGITAL GIFT MATRIX ~~</p>
+        <h1>Secret Santa Lookup</h1>
+        <p>Enter your passphrase to view your assignment</p>
       </header>
 
       <main className="main">
@@ -257,27 +276,17 @@ function App() {
         {/* Password Input */}
         {needsPassphrase && !state.isDataLoaded && (
           <div className="card" style={{ position: "relative" }}>
-            <div className="new-badge">NEW!</div>
-
-            {/* Classic 90s Marquee */}
-            <div className="marquee-container">
-              <div className="marquee-text">
-                ★ ★ ★ AUTHORIZED PERSONNEL ONLY ★ MAXIMUM SECURITY ZONE ★ CYBER
-                ENCRYPTION ACTIVE ★ ★ ★
-              </div>
+            <div style={{ textAlign: "center", marginBottom: "16px" }}>
+              <img
+                src="/secret-santa/images/snoopy-doghouse.gif"
+                alt="Snoopy at his doghouse"
+                style={{ maxWidth: "200px", height: "auto" }}
+              />
             </div>
 
             <h2>
-              <div
-                className="blinking-cursor"
-                style={{
-                  fontFamily: "Courier New, monospace",
-                  textAlign: "center",
-                }}
-              >
-                <div>╔══════════════════════════╗</div>
-                <div>║ SECURE ACCESS POINT ║</div>
-                <div>╚══════════════════════════╝</div>
+              <div style={{ textAlign: "center", marginBottom: "8px" }}>
+                <strong>Enter Passphrase:</strong>
               </div>
             </h2>
             <div className="input-group">
@@ -285,7 +294,7 @@ function App() {
                 type="text"
                 value={passphraseInput}
                 onChange={(e) => setPassphraseInput(e.target.value)}
-                placeholder=">>> ENTER CYBER KEY <<<"
+                placeholder="Your passphrase"
                 onKeyPress={(e) =>
                   e.key === "Enter" && handlePassphraseSubmit()
                 }
@@ -295,7 +304,7 @@ function App() {
                 onClick={handlePassphraseSubmit}
                 disabled={state.loading || !passphraseInput.trim()}
               >
-                [[ DECRYPT DATA ]]
+                Enter
               </button>
             </div>
           </div>
@@ -304,57 +313,46 @@ function App() {
         {/* Assignment Display */}
         {state.assignment && (
           <div className="card assignment-card">
+            <div style={{ textAlign: "center", marginBottom: "16px" }}>
+              <img
+                src="/secret-santa/images/santa-snoopy.gif"
+                alt="Santa Snoopy"
+                style={{ maxWidth: "200px", height: "auto" }}
+              />
+            </div>
             <div className="assignment-header">
               <h2>
-                <pre>
-                  {`  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-  ░  AGENT: ${state.assignment.giver.toUpperCase()}  ░
-  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░`}
-                </pre>
+                Secret Santa Assignment
               </h2>
               <p className="assignment-subtitle">
-                === MISSION BRIEFING DECODED ===
+                For: {state.assignment.giver}
               </p>
             </div>
 
             <div className="assignment-content">
               <div className="recipient-section">
                 <div className="recipient-label">
-                  <pre>
-                    {`    ┌─ TARGET ACQUIRED ─┐
-    │                   │
-    └───────────────────┘`}
-                  </pre>
+                  You are giving a gift to:
                 </div>
                 <div className="recipient-name">
-                  {state.assignment.recipient.toUpperCase()}
+                  {state.assignment.recipient}
                 </div>
               </div>
 
               {state.assignment.recipientBio && (
                 <div className="bio-section">
                   <div className="bio-label">
-                    <pre>
-                      {`  ┌─── INTEL REPORT ───┐
-  │   Gift Database    │
-  └────────────────────┘`}
-                    </pre>
+                    Gift Ideas & Preferences:
                   </div>
                   <div className="bio-content">
-                    <div>
-                      &gt; SUBJECT PROFILE:
-                      <br />
-                      &gt; {state.assignment.recipientBio}
-                      <br />
-                      &gt; END TRANSMISSION
-                    </div>
+                    {state.assignment.recipientBio}
                   </div>
                 </div>
               )}
 
               <div className="assignment-actions">
                 <button onClick={handlePrint} className="print-button">
-                  [[ PRINT DATA ]]
+                  Print
                 </button>
               </div>
             </div>
@@ -417,30 +415,11 @@ function App() {
       </main>
 
       <footer className="footer">
-        <pre>
-          {`  ┌──────────────────────────────────────────┐
-  │  CLASSIFIED: TOP SECRET TRANSMISSION     │
-  │  MAINTAIN OPERATIONAL SECURITY           │
-  │  CYBER PASSPHRASE = PERSONAL PROPERTY    │
-  │  UNAUTHORIZED SHARING PROHIBITED         │
-  └──────────────────────────────────────────┘`}
-        </pre>
-        <div style={{ marginTop: "2rem", textAlign: "center" }}>
-          <pre style={{ fontSize: "12px", color: "var(--matrix-green)" }}>
-            {`[WEBRINGS] -> [CYBERSPACE] -> [GEOCITIES] -> [ANGELFIRE]
-
-            This site is a member of the:
-            ★ SECRET SANTA CYBER RING ★
-            [ << PREV ] [ RANDOM ] [ NEXT >> ]
-
-            Last updated: ${new Date().toLocaleDateString()}
-            Site optimized for 56k modem`}
-          </pre>
-        </div>
+        <p>Secret Santa App - Keep your passphrase private</p>
+        <p>Merry Christmas! 🎄</p>
       </footer>
 
-      {/* Classic 90s Status Bar */}
-      <div className="status-bar"></div>
+
     </div>
   );
 }

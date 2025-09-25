@@ -1,1024 +1,623 @@
-/* 🌟 RADICAL 90s SECRET SANTA APP STYLES 🌟 */
-/* Welcome to the CYBERSPACE! Prepare for MAXIMUM 90s VIBES! */
+/* Windows 95 Secret Santa App Styles */
 
 .app {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     position: relative;
-    z-index: 2;
-    font-family: "Comic Sans MS", cursive;
+    background: var(--win95-silver);
+    font-family: "MS Sans Serif", sans-serif;
+    font-size: 11px;
+    border: 2px outset var(--win95-silver);
+}
+
+/* Windows 95 Title Bar */
+.title-bar {
+    background: linear-gradient(
+        90deg,
+        var(--win95-navy) 0%,
+        var(--win95-blue) 100%
+    );
+    color: var(--win95-white);
+    padding: 2px 4px;
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--win95-dark-gray);
+}
+
+.title-bar-text {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.title-bar-controls {
+    display: flex;
+    gap: 2px;
+}
+
+.title-bar-control {
+    width: 16px;
+    height: 14px;
+    background: var(--win95-silver);
+    border: 1px outset var(--win95-silver);
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--win95-black);
+    cursor: pointer;
+}
+
+.title-bar-control:active {
+    border: 1px inset var(--win95-silver);
 }
 
 .header {
     text-align: center;
-    padding: 3rem 1rem 2rem;
-    background: linear-gradient(
-        45deg,
-        var(--retro-purple) 0%,
-        var(--hot-pink) 25%,
-        var(--cyber-orange) 50%,
-        var(--neon-yellow) 75%,
-        var(--electric-blue) 100%
-    );
-    background-size: 400% 400%;
-    animation: rainbow-shift 3s ease-in-out infinite;
-    color: var(--white);
-    box-shadow:
-        0 8px 40px rgba(255, 0, 255, 0.5),
-        inset 0 0 50px rgba(255, 255, 255, 0.1);
-    position: relative;
-    border-bottom: 5px solid var(--neon-green);
-    overflow: hidden;
+    padding: 8px;
+    background: var(--win95-silver);
+    color: var(--win95-black);
+    margin-bottom: 8px;
 }
 
 .header::before {
-    content: "* * * WELCOME TO THE DIGITAL FRONTIER * * *";
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: "Courier New", monospace;
-    font-size: 12px;
-    color: var(--matrix-green);
-    text-shadow: 0 0 10px currentColor;
-    animation: neon-glow 2s ease-in-out infinite alternate;
+    display: none;
 }
 
 .header::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 20px;
-    background: repeating-linear-gradient(
-        90deg,
-        var(--hot-pink) 0px,
-        var(--cyber-orange) 5px,
-        var(--neon-yellow) 10px,
-        var(--neon-green) 15px,
-        var(--electric-blue) 20px
-    );
-    animation: rainbow-shift 1s linear infinite;
+    display: none;
 }
 
 .header h1 {
-    margin: 0 0 0.5rem 0;
-    font-size: 3.5rem;
-    font-weight: 900;
-    text-shadow:
-        3px 3px 0px var(--dark-bg),
-        6px 6px 0px rgba(0, 0, 0, 0.5),
-        0 0 30px var(--hot-pink),
-        0 0 60px var(--electric-blue);
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    position: relative;
-    z-index: 1;
-    animation: neon-glow 2s ease-in-out infinite alternate;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 4px 0;
+    font-family: "MS Sans Serif", sans-serif;
+    color: var(--win95-black);
 }
 
 .header p {
+    font-size: 11px;
     margin: 0;
-    font-size: 1.4rem;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    animation: rainbow-shift 4s linear infinite;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
 }
 
 .main {
     flex: 1;
-    max-width: 800px;
+    padding: 8px;
+    max-width: 600px;
     margin: 0 auto;
-    padding: 3rem 1rem;
     width: 100%;
     box-sizing: border-box;
-    position: relative;
-    z-index: 3;
 }
 
 .card {
-    background: linear-gradient(
-        135deg,
-        rgba(0, 0, 128, 0.9) 0%,
-        rgba(128, 0, 255, 0.6) 25%,
-        rgba(0, 128, 255, 0.6) 50%,
-        rgba(128, 0, 255, 0.6) 75%,
-        rgba(0, 0, 128, 0.9) 100%
-    );
-    border: 4px solid var(--neon-green);
+    background: var(--win95-silver);
+    border: 2px inset var(--win95-silver);
     border-radius: 0;
-    padding: 2.5rem;
-    margin-bottom: 2rem;
-    box-shadow:
-        0 0 30px var(--neon-green),
-        inset 0 0 30px rgba(0, 255, 0, 0.2),
-        0 10px 40px rgba(0, 0, 0, 0.5);
+    padding: 8px;
+    margin-bottom: 8px;
     position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    animation: border-rave 4s linear infinite;
 }
 
 .card:hover {
-    transform: scale(1.02);
-    box-shadow:
-        0 0 50px var(--hot-pink),
-        inset 0 0 50px rgba(255, 0, 255, 0.3),
-        0 15px 60px rgba(0, 0, 0, 0.6);
+    background: var(--win95-silver);
 }
 
 .card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: repeating-linear-gradient(
-        90deg,
-        var(--hot-pink) 0px,
-        var(--cyber-orange) 8px,
-        var(--neon-yellow) 16px,
-        var(--neon-green) 24px,
-        var(--electric-blue) 32px,
-        var(--retro-purple) 40px
-    );
-    animation: rainbow-shift 2s linear infinite;
+    display: none;
 }
 
 .card::after {
-    content: ">> ENCRYPTED DATA BLOCK <<";
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-family: "Courier New", monospace;
-    font-size: 10px;
-    color: var(--matrix-green);
-    text-shadow: 0 0 8px currentColor;
-    background: var(--dark-bg);
-    padding: 3px 8px;
-    border: 1px solid var(--matrix-green);
+    display: none;
 }
 
 .card h2 {
-    color: var(--neon-yellow);
-    margin: 0 0 1rem 0;
-    font-size: 2rem;
-    text-align: center;
-    font-weight: 900;
-    text-shadow:
-        2px 2px 0px var(--dark-bg),
-        0 0 20px currentColor;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    position: relative;
-    animation: neon-glow 3s ease-in-out infinite alternate;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 0 0 8px 0;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
 }
 
 .card h2::before {
-    content: "★ ";
-    color: var(--hot-pink);
-    text-shadow: 0 0 15px currentColor;
+    display: none;
 }
 
 .card h2::after {
-    content: " ★";
-    color: var(--hot-pink);
-    text-shadow: 0 0 15px currentColor;
+    display: none;
 }
 
 .card h3 {
-    color: var(--electric-blue);
-    margin: 0 0 1.5rem 0;
-    font-size: 1.6rem;
-    text-align: center;
-    font-weight: 800;
-    text-shadow:
-        1px 1px 0px var(--dark-bg),
-        0 0 15px currentColor;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    font-size: 11px;
+    font-weight: bold;
+    margin: 0 0 4px 0;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
 }
 
 .card p {
-    color: var(--white);
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    font-weight: bold;
+    font-size: 11px;
+    line-height: 1.2;
+    margin: 0 0 8px 0;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
 }
 
-/* CYBER LOADING STATE */
 .loading {
     text-align: center;
-    padding: 3rem;
-    font-size: 1.4rem;
-    color: var(--matrix-green);
-    text-shadow: 0 0 15px currentColor;
-    position: relative;
-    font-family: "Courier New", monospace;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    animation: neon-glow 1s ease-in-out infinite alternate;
+    padding: 16px;
+    font-size: 11px;
+    color: var(--win95-black);
+    background: var(--win95-silver);
+    border: 2px inset var(--win95-silver);
 }
 
 .loading::before {
-    content: "[ LOADING ] ";
-    color: var(--electric-blue);
-    text-shadow: 0 0 10px currentColor;
+    display: none;
 }
 
 .loading::after {
-    content: " [ PLEASE WAIT ]";
-    color: var(--cyber-orange);
-    text-shadow: 0 0 10px currentColor;
+    display: none;
 }
 
-/* RADICAL MESSAGE STYLES */
 .error-message,
 .success-message {
-    padding: 1.5rem;
+    padding: 8px;
+    margin: 8px 0;
     border-radius: 0;
-    margin-bottom: 1rem;
-    font-weight: 900;
-    font-size: 1.2rem;
-    border: 3px solid;
-    position: relative;
-    overflow: hidden;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-family: "Comic Sans MS", cursive;
+    font-size: 11px;
+    font-family: "MS Sans Serif", sans-serif;
+    border: 2px inset var(--win95-silver);
 }
 
 .error-message {
-    background: linear-gradient(
-        45deg,
-        rgba(255, 0, 0, 0.3) 0%,
-        rgba(255, 69, 0, 0.3) 50%,
-        rgba(255, 0, 0, 0.3) 100%
-    );
-    color: var(--warning-red);
-    border-color: var(--warning-red);
-    text-shadow: 0 0 15px currentColor;
-    box-shadow:
-        0 0 30px var(--warning-red),
-        inset 0 0 30px rgba(255, 0, 0, 0.2);
-    animation: neon-glow 1s ease-in-out infinite alternate;
+    background: var(--win95-silver);
+    color: var(--win95-maroon);
+    border-color: var(--win95-maroon);
 }
 
 .error-message::before {
-    content: "!!! SYSTEM ERROR !!! ";
-    font-family: "Courier New", monospace;
-    font-size: 1em;
-    display: block;
-    margin-bottom: 0.5rem;
+    display: none;
 }
 
 .success-message {
-    background: linear-gradient(
-        45deg,
-        rgba(0, 255, 0, 0.3) 0%,
-        rgba(50, 205, 50, 0.3) 50%,
-        rgba(0, 255, 0, 0.3) 100%
-    );
-    color: var(--neon-green);
-    border-color: var(--neon-green);
-    text-shadow: 0 0 15px currentColor;
-    box-shadow:
-        0 0 30px var(--neon-green),
-        inset 0 0 30px rgba(0, 255, 0, 0.2);
+    background: var(--win95-silver);
+    color: var(--win95-navy);
+    border-color: var(--win95-navy);
 }
 
 .success-message::before {
-    content: ">>> SUCCESS! <<< ";
-    font-family: "Courier New", monospace;
-    font-size: 1em;
-    display: block;
-    margin-bottom: 0.5rem;
+    display: none;
 }
 
-/* CYBER INPUT GROUPS */
 .input-group {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    position: relative;
+    margin-bottom: 8px;
+    align-items: stretch;
 }
 
 .input-group::before {
-    content: ">> INPUT REQUIRED <<";
-    position: absolute;
-    top: -20px;
-    left: 0;
-    font-family: "Courier New", monospace;
-    font-size: 10px;
-    color: var(--electric-blue);
-    text-shadow: 0 0 5px currentColor;
+    display: none;
 }
 
 .input-group input {
     flex: 1;
-    padding: 1rem;
-    border: 3px solid var(--electric-blue);
+    padding: 2px 4px;
+    border: 2px inset var(--win95-silver);
     border-radius: 0;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-    background: var(--dark-bg);
-    color: var(--neon-green);
-    font-family: "Courier New", monospace;
-    font-weight: bold;
-    box-shadow:
-        0 0 15px var(--electric-blue),
-        inset 0 0 15px rgba(0, 255, 255, 0.1);
+    font-size: 11px;
+    background: var(--win95-white);
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+    margin-right: 4px;
 }
 
 .input-group input:focus {
-    outline: none;
-    border-color: var(--hot-pink);
-    box-shadow:
-        0 0 30px var(--hot-pink),
-        inset 0 0 30px rgba(255, 0, 255, 0.2);
-    background: rgba(128, 0, 255, 0.2);
-    transform: scale(1.02);
+    outline: 1px dotted var(--win95-black);
+    outline-offset: -2px;
 }
 
 .input-group input::placeholder {
-    color: var(--dark-gray);
-    font-style: italic;
-    text-transform: uppercase;
+    color: var(--win95-dark-gray);
+    font-family: "MS Sans Serif", sans-serif;
 }
 
 .input-group input:disabled {
-    background: rgba(64, 64, 64, 0.5);
-    opacity: 0.6;
-    cursor: not-allowed;
-    border-color: var(--dark-gray);
+    background: var(--win95-silver);
+    color: var(--win95-dark-gray);
 }
 
 .input-group button {
-    padding: 1rem 2rem;
-    background: linear-gradient(
-        45deg,
-        var(--retro-purple),
-        var(--hot-pink),
-        var(--cyber-orange)
-    );
-    background-size: 300% 300%;
-    animation: rainbow-shift 2s ease-in-out infinite;
-    color: var(--white);
-    border: 3px solid var(--hot-pink);
+    padding: 2px 8px;
+    border: 2px outset var(--win95-silver);
     border-radius: 0;
-    font-size: 1.1rem;
-    font-weight: 900;
+    background: var(--win95-silver);
+    color: var(--win95-black);
+    font-size: 11px;
+    font-family: "MS Sans Serif", sans-serif;
     cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    box-shadow:
-        0 0 20px var(--hot-pink),
-        inset 0 0 20px rgba(255, 0, 255, 0.2);
-    position: relative;
-    overflow: hidden;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-family: "Comic Sans MS", cursive;
+    min-width: 60px;
 }
 
 .input-group button::before {
-    content: ">> ";
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-family: "Courier New", monospace;
+    display: none;
 }
 
 .input-group button::after {
-    content: " <<";
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-family: "Courier New", monospace;
+    display: none;
 }
 
 .input-group button:hover:not(:disabled) {
-    background: linear-gradient(
-        45deg,
-        var(--hot-pink),
-        var(--neon-yellow),
-        var(--electric-blue)
-    );
-    transform: scale(1.05);
-    box-shadow:
-        0 0 40px var(--neon-yellow),
-        inset 0 0 40px rgba(255, 255, 0, 0.3);
-    border-color: var(--neon-yellow);
+    background: var(--win95-light-gray);
+}
+
+.input-group button:active:not(:disabled) {
+    border: 2px inset var(--win95-silver);
 }
 
 .input-group button:disabled {
-    background: linear-gradient(135deg, var(--dark-gray), #404040);
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: 0 0 10px rgba(128, 128, 128, 0.3);
-    border-color: var(--dark-gray);
-    animation: none;
+    color: var(--win95-dark-gray);
+    cursor: default;
 }
 
-/* PARTICIPANT COUNT - CYBER STYLE */
 .participant-count {
+    background: var(--win95-silver);
+    border: 2px inset var(--win95-silver);
+    padding: 8px;
+    margin: 8px 0;
+    font-size: 11px;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
     text-align: center;
-    font-size: 1rem;
-    color: var(--matrix-green);
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background: linear-gradient(
-        45deg,
-        rgba(0, 255, 65, 0.2) 0%,
-        rgba(0, 128, 32, 0.2) 100%
-    );
-    border: 2px dashed var(--matrix-green);
-    border-radius: 0;
-    text-shadow: 0 0 10px currentColor;
-    font-family: "Courier New", monospace;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow:
-        0 0 20px var(--matrix-green),
-        inset 0 0 20px rgba(0, 255, 65, 0.1);
 }
 
 .participant-count::before {
-    content: "[ PARTICIPANT COUNT ] ";
-    color: var(--electric-blue);
-    text-shadow: 0 0 8px currentColor;
+    display: none;
 }
 
-/* ASSIGNMENT DISPLAY - MAXIMUM 90s POWER */
 .assignment-card {
-    border: 5px solid var(--cyber-orange);
-    background: linear-gradient(
-        135deg,
-        rgba(255, 69, 0, 0.3) 0%,
-        rgba(128, 0, 255, 0.3) 25%,
-        rgba(0, 255, 255, 0.3) 50%,
-        rgba(128, 0, 255, 0.3) 75%,
-        rgba(255, 69, 0, 0.3) 100%
-    );
-    position: relative;
-    padding: 3rem 2.5rem;
-    animation: border-rave 3s linear infinite;
-    box-shadow:
-        0 0 50px var(--cyber-orange),
-        inset 0 0 50px rgba(255, 69, 0, 0.2);
+    background: var(--win95-silver);
+    border: 2px inset var(--win95-silver);
+    border-radius: 0;
+    padding: 12px;
+    margin: 8px 0;
 }
 
 .assignment-card::before {
-    background: repeating-linear-gradient(
-        90deg,
-        var(--hot-pink) 0px,
-        var(--neon-yellow) 12px,
-        var(--electric-blue) 24px,
-        var(--neon-green) 36px
-    );
-    height: 8px;
+    display: none;
 }
 
 .assignment-card::after {
-    content: ">>> ASSIGNMENT DATA <<<";
-    color: var(--cyber-orange);
-    border-color: var(--cyber-orange);
+    display: none;
 }
 
 .assignment-header {
     text-align: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 3px dashed var(--neon-yellow);
-    position: relative;
+    margin-bottom: 12px;
 }
 
 .assignment-header::before {
-    content: "* * * CLASSIFIED INFORMATION * * *";
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--dark-bg);
-    color: var(--neon-yellow);
-    padding: 5px 15px;
-    font-family: "Courier New", monospace;
-    font-size: 12px;
-    text-shadow: 0 0 10px currentColor;
-    border: 1px solid var(--neon-yellow);
+    display: none;
 }
 
 .assignment-subtitle {
-    font-size: 1.3rem;
-    color: var(--electric-blue);
-    margin: 1rem 0 0 0;
-    font-weight: 800;
-    text-shadow: 0 0 15px currentColor;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    animation: neon-glow 4s ease-in-out infinite alternate;
+    font-size: 11px;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+    margin-bottom: 8px;
 }
 
 .assignment-content {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+    margin-bottom: 12px;
 }
 
 .recipient-section {
-    text-align: center;
-    position: relative;
+    margin-bottom: 12px;
 }
 
 .recipient-section::before {
-    content: ">>> TARGET ACQUIRED <<<";
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: "Courier New", monospace;
-    font-size: 12px;
-    color: var(--warning-red);
-    text-shadow: 0 0 10px currentColor;
-    background: var(--dark-bg);
-    padding: 3px 10px;
-    border: 1px solid var(--warning-red);
+    display: none;
 }
 
 .recipient-label {
-    font-size: 1.4rem;
-    color: var(--neon-green);
-    font-weight: 900;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 20px currentColor;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+    margin-bottom: 4px;
 }
 
 .recipient-name {
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: var(--hot-pink);
-    text-shadow:
-        3px 3px 0px var(--dark-bg),
-        0 0 30px currentColor;
-    padding: 1.5rem 2rem;
-    background: linear-gradient(
-        45deg,
-        rgba(255, 0, 255, 0.3) 0%,
-        rgba(255, 20, 147, 0.3) 50%,
-        rgba(255, 0, 255, 0.3) 100%
-    );
-    border: 4px solid var(--hot-pink);
-    border-radius: 0;
-    margin: 0 auto;
-    max-width: 90%;
-    word-wrap: break-word;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    animation: neon-glow 2s ease-in-out infinite alternate;
-    box-shadow:
-        0 0 40px var(--hot-pink),
-        inset 0 0 40px rgba(255, 0, 255, 0.2);
-    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--win95-navy);
+    font-family: "MS Sans Serif", sans-serif;
+    background: var(--win95-white);
+    border: 2px inset var(--win95-silver);
+    padding: 4px 8px;
+    margin-bottom: 8px;
+    display: inline-block;
 }
 
 .bio-section {
-    background: linear-gradient(
-        45deg,
-        rgba(0, 255, 255, 0.2) 0%,
-        rgba(0, 128, 255, 0.2) 100%
-    );
-    padding: 2rem;
-    border: 3px solid var(--electric-blue);
-    border-radius: 0;
-    position: relative;
-    box-shadow:
-        0 0 30px var(--electric-blue),
-        inset 0 0 30px rgba(0, 255, 255, 0.1);
+    background: var(--win95-white);
+    border: 2px inset var(--win95-silver);
+    padding: 8px;
+    margin: 8px 0;
 }
 
 .bio-section::before {
-    content: "[ INTEL BRIEFING ]";
-    position: absolute;
-    top: -15px;
-    left: 20px;
-    background: var(--dark-bg);
-    color: var(--electric-blue);
-    padding: 5px 10px;
-    font-family: "Courier New", monospace;
-    font-size: 12px;
-    text-shadow: 0 0 8px currentColor;
-    border: 1px solid var(--electric-blue);
+    display: none;
 }
 
 .bio-label {
-    color: var(--neon-yellow);
-    font-size: 1.3rem;
-    font-weight: 900;
-    margin-bottom: 1rem;
-    text-align: center;
-    text-shadow: 0 0 15px currentColor;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+    margin-bottom: 4px;
 }
 
 .bio-content {
-    line-height: 1.6;
-    color: var(--white);
-    font-size: 1.1rem;
-    text-align: left;
-    font-family: "Courier New", monospace;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    font-weight: bold;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 1rem;
-    border: 1px dashed var(--electric-blue);
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    font-size: 11px;
+    line-height: 1.3;
+    color: var(--win95-black);
+    font-family: "MS Sans Serif", sans-serif;
+    white-space: pre-wrap;
 }
 
 .assignment-actions {
+    text-align: center;
+    margin-top: 12px;
     display: flex;
-    gap: 1.5rem;
+    gap: 8px;
     justify-content: center;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
 }
 
 .print-button,
 .secondary-button {
-    padding: 1.2rem 2.5rem;
-    border: 3px solid;
+    padding: 4px 12px;
+    border: 2px outset var(--win95-silver);
     border-radius: 0;
-    font-size: 1.2rem;
-    font-weight: 900;
+    background: var(--win95-silver);
+    color: var(--win95-black);
+    font-size: 11px;
+    font-family: "MS Sans Serif", sans-serif;
     cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    min-width: 180px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-family: "Comic Sans MS", cursive;
 }
 
 .print-button {
-    background: linear-gradient(
-        45deg,
-        var(--neon-yellow),
-        var(--cyber-orange),
-        var(--neon-yellow)
-    );
-    background-size: 300% 300%;
-    animation: rainbow-shift 2s ease-in-out infinite;
-    color: var(--dark-bg);
-    border-color: var(--neon-yellow);
-    box-shadow:
-        0 0 25px var(--neon-yellow),
-        inset 0 0 25px rgba(255, 255, 0, 0.2);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    background: var(--win95-silver);
+    color: var(--win95-black);
 }
 
 .print-button::before {
-    content: ">>> ";
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-family: "Courier New", monospace;
+    display: none;
 }
 
 .print-button::after {
-    content: " <<<";
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-family: "Courier New", monospace;
+    display: none;
 }
 
 .print-button:hover {
-    background: linear-gradient(
-        45deg,
-        var(--cyber-orange),
-        var(--hot-pink),
-        var(--cyber-orange)
-    );
-    transform: scale(1.08);
-    box-shadow:
-        0 0 50px var(--cyber-orange),
-        inset 0 0 50px rgba(255, 69, 0, 0.3);
-    border-color: var(--cyber-orange);
+    background: var(--win95-light-gray);
+}
+
+.print-button:active {
+    border: 2px inset var(--win95-silver);
 }
 
 .secondary-button {
-    background: linear-gradient(
-        45deg,
-        rgba(0, 255, 0, 0.3),
-        rgba(0, 255, 255, 0.3),
-        rgba(0, 255, 0, 0.3)
-    );
-    color: var(--neon-green);
-    border-color: var(--neon-green);
-    box-shadow:
-        0 0 25px var(--neon-green),
-        inset 0 0 25px rgba(0, 255, 0, 0.1);
-    text-shadow: 0 0 10px currentColor;
+    background: var(--win95-silver);
+    color: var(--win95-black);
 }
 
 .secondary-button:hover {
-    background: linear-gradient(
-        45deg,
-        rgba(0, 255, 255, 0.5),
-        rgba(128, 0, 255, 0.5),
-        rgba(0, 255, 255, 0.5)
-    );
-    color: var(--electric-blue);
-    border-color: var(--electric-blue);
-    transform: scale(1.08);
-    box-shadow:
-        0 0 50px var(--electric-blue),
-        inset 0 0 50px rgba(0, 255, 255, 0.3);
+    background: var(--win95-light-gray);
 }
 
-/* CYBER INSTRUCTIONS */
+.secondary-button:active {
+    border: 2px inset var(--win95-silver);
+}
+
 .instructions {
-    text-align: left;
-    background: linear-gradient(
-        45deg,
-        rgba(0, 255, 65, 0.2) 0%,
-        rgba(0, 128, 255, 0.2) 100%
-    );
-    padding: 1.5rem;
-    border: 3px dashed var(--matrix-green);
-    border-radius: 0;
-    position: relative;
-    box-shadow:
-        0 0 25px var(--matrix-green),
-        inset 0 0 25px rgba(0, 255, 65, 0.1);
+    background: var(--win95-silver);
+    border: 2px inset var(--win95-silver);
+    padding: 12px;
+    margin: 8px 0;
+    font-size: 11px;
+    font-family: "MS Sans Serif", sans-serif;
 }
 
 .instructions::before {
-    content: "[ SYSTEM MANUAL ]";
-    position: absolute;
-    top: -15px;
-    left: 20px;
-    background: var(--dark-bg);
-    color: var(--matrix-green);
-    padding: 5px 10px;
-    font-family: "Courier New", monospace;
-    font-size: 12px;
-    text-shadow: 0 0 8px currentColor;
-    border: 1px solid var(--matrix-green);
+    display: none;
 }
 
 .instructions ol {
-    padding-left: 2rem;
-    color: var(--white);
-    font-weight: bold;
+    margin: 8px 0;
+    padding-left: 20px;
 }
 
 .instructions li {
-    margin-bottom: 1rem;
-    line-height: 1.5;
-    font-size: 1rem;
-    position: relative;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    margin-bottom: 4px;
+    color: var(--win95-black);
 }
 
 .instructions li::marker {
-    color: var(--electric-blue);
-    font-weight: 900;
+    color: var(--win95-black);
 }
 
 .instructions p {
-    color: var(--white);
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    margin: 4px 0;
 }
 
 .instructions strong {
-    color: var(--neon-yellow);
-    text-shadow: 0 0 10px currentColor;
-    text-transform: uppercase;
+    font-weight: bold;
+    color: var(--win95-black);
 }
 
-/* FOOTER - END OF TRANSMISSION */
 .footer {
+    background: var(--win95-silver);
+    border-top: 2px inset var(--win95-silver);
+    padding: 8px;
     text-align: center;
-    padding: 3rem 1rem;
-    background: linear-gradient(
-        45deg,
-        var(--dark-bg) 0%,
-        var(--darker-bg) 50%,
-        var(--dark-bg) 100%
-    );
-    color: var(--matrix-green);
     margin-top: auto;
-    position: relative;
-    border-top: 5px solid var(--matrix-green);
-    box-shadow:
-        0 0 30px var(--matrix-green),
-        inset 0 0 30px rgba(0, 255, 65, 0.1);
 }
 
 .footer::before {
-    content: "=== SECURE TRANSMISSION COMPLETE ===";
-    display: block;
-    font-family: "Courier New", monospace;
-    font-size: 14px;
-    margin-bottom: 1rem;
-    color: var(--electric-blue);
-    text-shadow: 0 0 15px currentColor;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    display: none;
 }
 
 .footer p {
-    margin: 0.5rem 0;
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-shadow: 0 0 10px currentColor;
-    font-family: "Comic Sans MS", cursive;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-size: 11px;
+    color: var(--win95-black);
+    margin: 0;
+    font-family: "MS Sans Serif", sans-serif;
 }
 
 .footer::after {
-    content: "[ CONNECTION TERMINATED ]";
-    display: block;
-    margin-top: 1rem;
-    font-family: "Courier New", monospace;
-    font-size: 12px;
-    color: var(--warning-red);
-    text-shadow: 0 0 10px currentColor;
-    animation: neon-glow 2s ease-in-out infinite alternate;
+    display: none;
 }
 
-/* RESPONSIVE DESIGN - 90s STYLE */
+/* Media Queries */
 @media (max-width: 768px) {
     .header {
-        padding: 2rem 1rem 1.5rem;
+        padding: 6px;
     }
 
     .header h1 {
-        font-size: 2.5rem;
-        letter-spacing: 2px;
+        font-size: 14px;
     }
 
     .header p {
-        font-size: 1.2rem;
-        letter-spacing: 1px;
+        font-size: 10px;
     }
 
     .main {
-        padding: 2rem 1rem;
+        padding: 6px;
     }
 
     .card {
-        padding: 2rem;
+        padding: 6px;
     }
 
     .assignment-card {
-        padding: 2rem 1.5rem;
+        padding: 8px;
     }
 
     .assignment-content {
-        gap: 1.5rem;
+        margin-bottom: 8px;
     }
 
     .recipient-name {
-        font-size: 2rem;
-        padding: 1.5rem;
-        min-width: 200px;
-        letter-spacing: 2px;
+        font-size: 12px;
     }
 
     .bio-section {
-        padding: 1.5rem;
+        padding: 6px;
     }
 
     .bio-content {
-        font-size: 1rem;
-        text-align: left;
+        font-size: 10px;
     }
 
     .input-group {
         flex-direction: column;
-        gap: 1rem;
+    }
+
+    .input-group input {
+        margin-right: 0;
+        margin-bottom: 4px;
     }
 
     .assignment-actions {
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
     }
 
     .assignment-actions button {
-        width: 100%;
-        max-width: 300px;
+        width: 120px;
     }
 }
 
 @media (max-width: 480px) {
     .header {
-        padding: 1.5rem 1rem;
+        padding: 4px;
     }
 
     .header h1 {
-        font-size: 2rem;
-        letter-spacing: 1px;
+        font-size: 12px;
     }
 
     .card {
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
+        padding: 4px;
     }
 
     .assignment-card {
-        padding: 1.5rem 1rem;
+        padding: 6px;
     }
 
     .card h2 {
-        font-size: 1.6rem;
-        letter-spacing: 2px;
+        font-size: 11px;
     }
 
     .assignment-header {
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
+        margin-bottom: 8px;
     }
 
     .assignment-subtitle {
-        font-size: 1.1rem;
-        letter-spacing: 1px;
+        font-size: 10px;
     }
 
     .recipient-label {
-        font-size: 1.2rem;
-        letter-spacing: 1px;
+        font-size: 10px;
     }
 
     .recipient-name {
-        font-size: 1.8rem;
-        padding: 1.2rem 1rem;
-        min-width: 150px;
-        letter-spacing: 1px;
+        font-size: 11px;
+        padding: 2px 4px;
     }
 
     .bio-label {
-        font-size: 1.2rem;
-        letter-spacing: 1px;
+        font-size: 10px;
     }
 
     .bio-section {
-        padding: 1.2rem;
+        padding: 4px;
     }
 
     .input-group input,
     .input-group button {
-        padding: 1rem;
-        font-size: 1rem;
+        padding: 4px;
+        font-size: 10px;
     }
 
     .print-button,
     .secondary-button {
-        padding: 1rem 2rem;
-        font-size: 1rem;
-        min-width: 150px;
-        letter-spacing: 1px;
+        padding: 6px 8px;
+        font-size: 10px;
     }
 }
 
-/* PRINT STYLES - KEEP IT RADICAL */
 @media print {
     .app {
-        background: white !important;
+        background: white;
     }
 
     .header,
     .footer {
-        background: white !important;
-        color: black !important;
-        box-shadow: none;
-        border: 3px solid black;
+        display: none;
     }
 
     .card {
-        background: white !important;
-        box-shadow: none;
-        border: 3px solid black;
-        animation: none;
+        border: 1px solid black;
+        background: white;
     }
 
     .input-group,
@@ -1032,15 +631,13 @@
 
     .recipient-section,
     .bio-section {
-        border-color: black;
-        background: white !important;
-        box-shadow: none;
+        border: 1px solid black;
+        background: white;
     }
 
     .header h1 {
-        color: black !important;
-        text-shadow: none;
-        animation: none;
+        color: black;
+        font-size: 16px;
     }
 
     .card::before,
@@ -1052,49 +649,39 @@
 
     .error-message,
     .success-message {
-        animation: none;
-        border-color: black;
-        background: white !important;
-        color: black !important;
+        display: none;
     }
 }
 
-/* ACCESSIBILITY WITH 90s ENERGY */
 button:focus,
 input:focus {
-    outline: 3px solid var(--neon-yellow);
-    outline-offset: 3px;
+    outline: 1px dotted var(--win95-black);
+    outline-offset: -2px;
 }
 
-/* HIGH CONTRAST - MAXIMUM NEON */
 @media (prefers-contrast: high) {
     .card {
-        border-width: 5px;
-        border-color: var(--neon-green) !important;
-        background: var(--dark-bg) !important;
-        box-shadow: 0 0 50px var(--neon-green) !important;
+        border: 2px solid var(--win95-black);
+        background: var(--win95-white);
     }
 
     .input-group input {
-        border-width: 4px;
-        background: var(--dark-bg) !important;
-        color: var(--neon-green) !important;
+        border: 2px solid var(--win95-black);
+        background: var(--win95-white);
     }
 
     .bio-section,
     .recipient-section {
-        border-width: 4px;
-        background: var(--dark-bg) !important;
+        border: 2px solid var(--win95-black);
+        background: var(--win95-white);
     }
 
     .error-message,
     .success-message {
-        border-width: 4px;
-        background: var(--dark-bg) !important;
+        border: 2px solid var(--win95-black);
     }
 }
 
-/* REDUCED MOTION - BUT KEEP THE GLOW */
 @media (prefers-reduced-motion: reduce) {
     .header h1,
     .card,
@@ -1102,7 +689,8 @@ input:focus {
     .print-button,
     .secondary-button,
     .error-message {
-        animation: none !important;
+        animation: none;
+        transition: none;
     }
 
     .card:hover,
@@ -1110,18 +698,16 @@ input:focus {
     .input-group button:hover,
     .print-button:hover,
     .secondary-button:hover {
-        transform: none !important;
+        transform: none;
+        transition: none;
     }
 
-    /* Keep the glow effects for that 90s feel */
     .header h1 {
-        text-shadow:
-            3px 3px 0px var(--dark-bg),
-            0 0 30px var(--hot-pink) !important;
+        animation: none;
+        text-shadow: none;
     }
 
     .card {
-        border-color: var(--neon-green) !important;
-        box-shadow: 0 0 30px var(--neon-green) !important;
+        animation: none;
     }
 }

@@ -1,0 +1,16 @@
+# Preserve ASCII art and whitespace formatting
+src/App.tsx
+src/index.css
+
+# Preserve any ASCII art in components
+src/components/**/*.tsx
+src/components/**/*.css
+
+# Preserve pre-formatted text files
+*.txt
+*.ascii
+*.art
+
+# Preserve markdown formatting
+*.md
+README.md
